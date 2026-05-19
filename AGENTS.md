@@ -15,9 +15,6 @@
 
 ### 建立 / 重建 venv
 
-> ⚠️ `venv/` 目錄已存在但 Python 執行檔缺失（venv 在其他機器建立）。
-> 需重建：
-
 ```bash
 # 刪除舊 venv（若存在）
 rmdir /s /q venv
@@ -53,9 +50,8 @@ roster-reciter/
 ├── app.py                    # Flask 主程式，所有 API 路由
 ├── requirements.txt          # Flask + Pillow（僅 2 個相依）
 ├── config/
-│   ├── default_layout.json   # 出廠預設版面（重設時覆寫）
-│   ├── layout.json           # 使用者目前版面（自動儲存，gitignore）
-│   └── session.json          # 已廢棄，工作環境改存於 layout.json
+│   ├── default_layout.json   # 出廠預設版面（重設時讀取，進版控）
+│   └── layout.json           # 使用者目前版面（自動儲存，gitignore）
 ├── core/
 │   ├── image_composer.py     # Pillow 圖片合成核心
 │   ├── layout.py             # 版面 dataclass（Layout / ImageSlot / TitleBox…）
@@ -86,10 +82,12 @@ roster-reciter/
 | POST | `/api/preview` | 預覽單張投影片（回傳 PNG） |
 | POST | `/api/generate` | 批量生成並下載 ZIP |
 | POST | `/api/upload/background` | 上傳背景圖 |
+| POST | `/api/upload/background/clear` | 清除背景圖 |
 | POST | `/api/upload/default_image` | 上傳全局缺圖預設 |
 | POST | `/api/upload/default_image/<n>` | 上傳玩家 n 的缺圖預設 |
 | POST | `/api/upload/avatar/<n>` | 上傳玩家 n 的頭像 |
 | POST | `/api/upload/namemap` | 上傳角色名稱對照表（CSV/JSON） |
+| GET | `/api/uploads/status` | 查詢各上傳資源是否存在 |
 | GET | `/api/fonts` | 列出系統字型（TTF/TTC/OTF） |
 | GET | `/api/browse/folder` | 開啟原生資料夾選擇對話框 |
 | GET/POST | `/api/session` | 已廢棄（stub，回傳空值） |
@@ -120,6 +118,27 @@ roster-reciter/
 
 ---
 
+## 前端模組說明
+
+### `static/js/main.js`
+主控制器，管理全域 `state`（baseDir、playerFolders、characters、selectedCharIndex、layout）。
+- `init()` → 載入版面、還原工作環境、綁定事件
+- `scanCharacters()` → 呼叫 `/api/scan`，掃描完成後自動預覽第一個角色
+- `immediateSaveLayout()` → 預覽前呼叫，確保後端用最新設定
+- `syncEnvToLayout()` → 將 baseDir / playerFolders / remember 注入 `state.layout` 再儲存
+
+### `static/js/preview.js`
+- `requestPreview()` → 以目前選取角色呼叫 `/api/preview`，更新右側預覽圖
+- `requestBlankPreview()` → 無角色時預覽空版面（背景 + 框格位置）
+
+### `static/js/layout-editor.js`
+- `renderSlotInputs()` → 渲染每個玩家的圖片框 / 頭像 / 名字設定區塊，結束後呼叫 `_refreshAvatarThumbs()`
+- `renderDragBoxes()` → 在預覽圖上疊加可拖拉的方塊
+- `_refreshAvatarThumbs()` → 查詢 `/api/uploads/status`，只對 `avatar.enabled=true` 的 slot 填入縮圖 src（避免 404）
+- `collectSlotInputs()` → 將表單值收集回 `state.layout.image_slots`
+
+---
+
 ## 程式碼慣例
 
 - **Python 版本：** 3.10，使用 `from __future__ import annotations`
@@ -139,3 +158,5 @@ roster-reciter/
 4. **上傳大小限制**：`MAX_CONTENT_LENGTH = 50MB`，超大圖片需先壓縮。
 5. **`/api/browse/folder`**：使用 `tkinter` 開啟原生對話框，需在有 GUI 的環境執行（不支援 headless server）。
 6. **`output/` 每次批量生成前會被清空**（`shutil.rmtree`），請先下載上次的 ZIP。
+7. **頭像縮圖 404**：`avatar.enabled=false` 的 slot 不會發出圖片請求；`_refreshAvatarThumbs()` 負責在確認檔案存在後才填入 src。
+8. **`dom.previewCharName` 已移除**：`preview.js` 不再設定此元素，角色名稱顯示在 toolbar 的 `char-switcher-label`。
