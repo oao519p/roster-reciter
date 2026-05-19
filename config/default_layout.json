@@ -1,0 +1,60 @@
+{
+  "canvas": {
+    "width": 1920,
+    "height": 1080,
+    "background_color": "#1a1a2e"
+  },
+  "title": {
+    "x": 50,
+    "y": 20,
+    "width": 1820,
+    "height": 100,
+    "style": {
+      "font_path": "",
+      "font_size": 72,
+      "color": "#FFFFFF",
+      "bold": false,
+      "align": "center"
+    }
+  },
+  "image_slots": [
+    {
+      "player_index": 0,
+      "x": 530,
+      "y": 380,
+      "width": 200,
+      "height": 400,
+      "avatar": {
+        "enabled": false,
+        "x": 530,
+        "y": 380,
+        "size": 60,
+        "bg_color": ""
+      },
+      "label": {
+        "enabled": false,
+        "x": 530,
+        "y": 788,
+        "width": 200,
+        "height": 36,
+        "text": "玩家1",
+        "bg_color": "",
+        "style": {
+          "font_path": "",
+          "font_size": 24,
+          "color": "#FFFFFF",
+          "bold": false,
+          "align": "center"
+        }
+      }
+    }
+  ],
+  "remember": true,
+  "base_dir": "",
+  "player_folders": [],
+  "player_count": 1,
+  "background_path": "",
+  "default_image_path": "",
+  "player_default_paths": [],
+  "namemap_path": ""
+}

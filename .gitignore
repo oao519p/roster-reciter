@@ -1,0 +1,11 @@
+venv/
+static/uploads/
+.codepilot/trajectories/
+output/
+output.zip
+config/layout.json
+config/session.json
+__pycache__/
+*.pyc
+*.pyo
+.env

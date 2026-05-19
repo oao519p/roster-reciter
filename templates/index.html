@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RosterReciter</title>
+  <link rel="stylesheet" href="/static/css/main.css" />
+</head>
+<body>
+  <div id="app">
+
+    <header class="topbar">
+      <h1>🎴 RosterReciter</h1>
+      <span class="subtitle">報菜名投影片生成器</span>
+    </header>
+
+    <div class="main-layout">
+
+      <!-- ── 左側設定面板 ── -->
+      <aside class="sidebar">
+
+        <!-- Step Bar -->
+        <nav class="step-bar">
+          <button class="step-btn active" data-target="panel-1">
+            <span class="step-dot">1</span><span class="step-label">資料夾</span>
+          </button>
+          <div class="step-line"></div>
+          <button class="step-btn" data-target="panel-2">
+            <span class="step-dot">2</span><span class="step-label">資源</span>
+          </button>
+          <div class="step-line"></div>
+          <button class="step-btn" data-target="panel-3">
+            <span class="step-dot">3</span><span class="step-label">版面</span>
+          </button>
+          <div class="step-line"></div>
+          <button class="step-btn" data-target="panel-4">
+            <span class="step-dot">4</span><span class="step-label">圖片框</span>
+          </button>
+          <div class="step-line"></div>
+          <button class="step-btn" data-target="panel-5">
+            <span class="step-dot">5</span><span class="step-label">生成</span>
+          </button>
+        </nav>
+
+        <!-- Step 1：資料夾設定 -->
+        <section class="panel" id="panel-1">
+          <h2><span class="step-badge">1</span> 資料夾設定</h2>
+
+          <label>圖片根目錄（base_dir）</label>
+          <div class="row-inline">
+            <input type="text" id="base-dir" placeholder="例：D:/images" style="flex:1" />
+            <button class="btn-secondary" id="btn-browse-base" title="選擇資料夾">📁</button>
+          </div>
+
+          <label>玩家數量 <span class="hint">（1～20）</span></label>
+          <div class="row-inline">
+            <input type="number" id="player-count" value="7" min="1" max="20" style="width:80px" />
+            <button class="btn-secondary" id="btn-apply-count">套用</button>
+          </div>
+
+          <div id="player-folder-list"></div>
+
+          <button class="btn-primary" id="btn-scan">🔍 掃描角色</button>
+          <div id="scan-result" class="status-msg"></div>
+        </section>
+
+        <!-- Step 2：資源上傳 -->
+        <section class="panel" id="panel-2">
+          <h2><span class="step-badge">2</span> 資源設定</h2>
+
+          <label>背景圖片 <span class="hint">（上傳後自動預覽）</span></label>
+          <div class="upload-row">
+            <input type="file" id="upload-bg" accept="image/*" />
+            <button class="btn-secondary" id="btn-clear-bg" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>
+            <span id="bg-status" class="status-inline"></span>
+          </div>
+
+          <label>缺圖預設圖片（全局）</label>
+          <div class="upload-row">
+            <input type="file" id="upload-default" accept="image/*" />
+            <span id="default-status" class="status-inline"></span>
+          </div>
+
+          <label>缺圖預設圖片（個別玩家，優先於全局）</label>
+          <div id="player-default-list" class="hint">請先套用玩家數量後顯示</div>
+
+          <label>角色名稱對照表 <span class="hint">（CSV 或 JSON）</span></label>
+          <div class="upload-row">
+            <input type="file" id="upload-namemap" accept=".csv,.json" />
+            <span id="namemap-status" class="status-inline"></span>
+          </div>
+        </section>
+
+        <!-- Step 3：版面設定 -->
+        <section class="panel" id="panel-3">
+          <h2><span class="step-badge">3</span> 版面設定</h2>
+
+          <div class="layout-sub">
+            <label>畫布尺寸</label>
+            <div class="row-inline">
+              <input type="number" id="canvas-w" value="1920" style="width:90px" />
+              <span>×</span>
+              <input type="number" id="canvas-h" value="1080" style="width:90px" />
+              <span class="hint">px</span>
+            </div>
+          </div>
+
+          <div class="layout-sub">
+            <label>背景顏色 <span class="hint">（無背景圖時使用）</span></label>
+            <input type="color" id="canvas-bg-color" value="#1a1a2e" />
+          </div>
+
+          <div class="layout-sub">
+            <label>標題文字</label>
+            <div class="form-grid">
+              <span>字型</span>
+              <div style="display:flex;gap:4px;align-items:center">
+                <select id="title-font-select" style="flex:1">
+                  <option value="">── 手動輸入路徑 ──</option>
+                </select>
+                <button class="btn-secondary" id="btn-load-fonts" style="padding:4px 8px;font-size:11px">掃描</button>
+              </div>
+              <span>字型路徑</span>
+              <input type="text" id="title-font-path" placeholder="留空=不支援中文；選上方或手動填路徑" />
+              <span>字體大小</span>
+              <input type="number" id="title-font-size" value="72" min="10" max="300" />
+              <span>顏色</span>
+              <input type="color" id="title-color" value="#ffffff" />
+              <span>對齊</span>
+              <select id="title-align">
+                <option value="center">置中</option>
+                <option value="left">靠左</option>
+                <option value="right">靠右</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="layout-sub">
+            <label>標題框位置 <span class="hint">（px）</span></label>
+            <div class="form-grid">
+              <span>X</span><input type="number" id="title-x" value="50" />
+              <span>Y</span><input type="number" id="title-y" value="20" />
+              <span>寬</span><input type="number" id="title-w" value="1820" />
+              <span>高</span><input type="number" id="title-h" value="100" />
+            </div>
+          </div>
+          <div class="row-inline" style="margin-top:8px;gap:6px">
+            <button class="btn-secondary" id="btn-reset-layout" style="flex:1">↺ 重設為原廠版面</button>
+          </div>
+          <div id="layout-status" class="status-msg"></div>
+        </section>
+
+        <!-- Step 4：圖片框位置 -->
+        <section class="panel" id="panel-4">
+          <h2><span class="step-badge">4</span> 圖片框 / 頭像 / 名字</h2>
+
+          <!-- 等比例 -->
+          <div class="row-inline">
+            <label style="margin:0;color:var(--text);font-size:13px">
+              <input type="checkbox" id="lock-ratio" checked style="width:auto;margin-right:4px" />
+              圖片框等比例調整（寬 ↔ 高）
+            </label>
+          </div>
+
+          <!-- 同步設定 -->
+          <div class="sync-bar">
+            <span class="sync-label">🔁 將 P1 角色框設定同步到其他玩家</span>
+            <div class="sync-row">
+              <label class="sync-check"><input type="checkbox" id="sync-size" checked /> 大小（W/H）</label>
+              <label class="sync-check"><input type="checkbox" id="sync-align-x" /> 對齊 X 軸</label>
+              <label class="sync-check"><input type="checkbox" id="sync-align-y" /> 對齊 Y 軸</label>
+            </div>
+            <span class="sync-sublabel">頭像框、名字框的位置/樣式也會一併同步（各自上傳圖片與名字文字保留）</span>
+            <button class="btn-primary" id="btn-sync" style="padding:5px 14px;font-size:12px;width:100%">🔁 套用同步到所有玩家</button>
+          </div>
+
+          <div id="slot-inputs"></div>
+        </section>
+
+        <!-- Step 5：生成 -->
+        <section class="panel" id="panel-5">
+          <h2><span class="step-badge">5</span> 生成輸出</h2>
+          <p class="hint" id="char-list-hint">請先完成步驟 1 掃描角色。</p>
+          <div id="character-list"></div>
+          <div class="row-inline" style="margin-top:12px">
+            <button class="btn-primary" id="btn-generate">⬇ 批量生成 ZIP</button>
+          </div>
+          <div id="generate-status" class="status-msg"></div>
+        </section>
+
+      </aside>
+
+      <!-- ── 右側預覽區 ── -->
+      <main class="preview-area">
+        <div class="preview-toolbar">
+          <span>預覽</span>
+          <div id="char-switcher" class="char-switcher">
+            <span id="char-switcher-label">— 尚未掃描 —</span>
+            <ul id="char-switcher-list" class="char-switcher-list"></ul>
+          </div>
+          <span id="autosave-indicator" class="autosave-indicator"></span>
+          <div class="toolbar-actions">
+            <label class="session-toggle-label" title="勾選後，下次開啟會自動還原所有設定（資料夾、字型、版面等）">
+              <input type="checkbox" id="session-save-toggle" />
+              <span>保留版面設定到下一次</span>
+            </label>
+            <button class="btn-secondary toolbar-btn" id="btn-save-now" title="立即儲存版面設定">💾 儲存</button>
+            <button class="btn-secondary toolbar-btn" id="btn-preview">👁 預覽</button>
+            <button class="btn-secondary toolbar-btn" id="btn-load-default" title="將版面、字型等全部重設為 default_layout.json 的原廠設定">↺ 載入原廠設定</button>
+          </div>
+        </div>
+
+        <div class="preview-canvas-wrapper" id="preview-wrapper">
+          <div class="preview-placeholder" id="preview-placeholder">
+            上傳背景圖片或點「👁 預覽」顯示效果
+          </div>
+          <img id="preview-img" src="" alt="" style="display:none" />
+          <div id="drag-overlay"></div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/static/js/main.js" type="module"></script>
+</body>
+</html>

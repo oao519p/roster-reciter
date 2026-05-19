@@ -1,0 +1,6 @@
+type: cmdline
+name: install
+description: 重建 venv（Python 3.10）並安裝所有相依套件
+command: |
+  rmdir /s /q venv 2>nul & py -3.10 -m venv venv && venv\Scripts\pip install -r requirements.txt
+working_directory: D:\project\python\roster-reciter
