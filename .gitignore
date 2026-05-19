@@ -1,6 +1,7 @@
 venv/
 static/uploads/
 .codepilot/trajectories/
+.codepilot_knowledge/
 output/
 output.zip
 config/layout.json
