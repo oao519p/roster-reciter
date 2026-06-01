@@ -81,7 +81,10 @@ class Layout:
     background_path: str = ""      # 背景圖（static/uploads/background.png）
     default_image_path: str = ""   # 全局缺圖預設
     player_default_paths: list = field(default_factory=list)  # 個別玩家缺圖預設
-    namemap_path: str = ""         # 名稱對照表（csv 或 json）
+    namemap_path: str = ""         # 名稱對照表（json）
+    namemap_mode: str = "normal"   # "normal" | "hr_dossier"
+    namemap_lang: str = "tw"       # "tw" | "cn" | "en" | "jp"
+    label_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#FFFFFF", align="center"))
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -119,6 +122,9 @@ class Layout:
             default_image_path=data.get("default_image_path", ""),
             player_default_paths=data.get("player_default_paths", []),
             namemap_path=data.get("namemap_path", ""),
+            namemap_mode=data.get("namemap_mode", "normal"),
+            namemap_lang=data.get("namemap_lang", "tw"),
+            label_style=TextStyle(**data["label_style"]) if data.get("label_style") else TextStyle(font_size=24, color="#FFFFFF", align="center"),
         )
 
     def save(self, path) -> None:
@@ -184,4 +190,7 @@ class Layout:
             default_image_path="",
             player_default_paths=[],
             namemap_path="",
+            namemap_mode="normal",
+            namemap_lang="tw",
+            label_style=TextStyle(font_size=24, color="#FFFFFF", align="center"),
         )

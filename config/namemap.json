@@ -1,0 +1,2087 @@
+{
+  "char_002_amiya": {
+    "tw": "阿米婭",
+    "cn": "阿米娅",
+    "en": "Amiya"
+  },
+  "char_003_kalts": {
+    "tw": "凱爾希",
+    "cn": "凯尔希",
+    "en": "Kal'tsit"
+  },
+  "char_009_12fce": {
+    "tw": "12F",
+    "cn": "12F",
+    "en": "12F"
+  },
+  "char_010_chen": {
+    "tw": "陳",
+    "cn": "陈",
+    "en": "Ch'en"
+  },
+  "char_017_huang": {
+    "tw": "煌",
+    "cn": "煌",
+    "en": "Blaze"
+  },
+  "char_1001_amiya2": {
+    "tw": "阿米婭",
+    "cn": "阿米娅",
+    "en": "Amiya"
+  },
+  "char_1011_lava2": {
+    "tw": "炎獄炎熔",
+    "cn": "炎狱炎熔",
+    "en": "Lava the Purgatory"
+  },
+  "char_1012_skadi2": {
+    "tw": "濁心斯卡蒂",
+    "cn": "浊心斯卡蒂",
+    "en": "Skadi the Corrupting Heart"
+  },
+  "char_1013_chen2": {
+    "tw": "假日威龍陳",
+    "cn": "假日威龙陈",
+    "en": "Ch'en the Holungday"
+  },
+  "char_1014_nearl2": {
+    "tw": "耀騎士臨光",
+    "cn": "耀骑士临光",
+    "en": "Nearl the Radiant Knight"
+  },
+  "char_1016_agoat2": {
+    "tw": "純燼艾雅法拉",
+    "cn": "纯烬艾雅法拉",
+    "en": "Eyjafjalla the Hvít Aska"
+  },
+  "char_1019_siege2": {
+    "tw": "維娜·維多利亞",
+    "cn": "维娜·维多利亚",
+    "en": "Vina Victoria"
+  },
+  "char_101_sora": {
+    "tw": "空",
+    "cn": "空",
+    "en": "Sora"
+  },
+  "char_1020_reed2": {
+    "tw": "焰影葦草",
+    "cn": "焰影苇草",
+    "en": "Reed The Flame Shadow"
+  },
+  "char_1021_kroos2": {
+    "tw": "寒芒克洛絲",
+    "cn": "寒芒克洛丝",
+    "en": "Kroos the Keen Glint"
+  },
+  "char_1022_flwr2": {
+    "tw": "擷英調香師",
+    "cn": "撷英调香师",
+    "en": "Perfumer the Distilled"
+  },
+  "char_1023_ghost2": {
+    "tw": "歸溟幽靈鯊",
+    "cn": "归溟幽灵鲨",
+    "en": "Specter the Unchained"
+  },
+  "char_1024_hbisc2": {
+    "tw": "濯塵芙蓉",
+    "cn": "濯尘芙蓉",
+    "en": "Hibiscus the Purifier"
+  },
+  "char_1026_gvial2": {
+    "tw": "百煉嘉維爾",
+    "cn": "百炼嘉维尔",
+    "en": "Gavial the Invincible"
+  },
+  "char_1027_greyy2": {
+    "tw": "承曦格雷伊",
+    "cn": "承曦格雷伊",
+    "en": "Greyy the Lightningbearer"
+  },
+  "char_1028_texas2": {
+    "tw": "緘默德克薩斯",
+    "cn": "缄默德克萨斯",
+    "en": "Texas the Omertosa"
+  },
+  "char_1029_yato2": {
+    "tw": "麒麟R夜刀",
+    "cn": "麒麟R夜刀",
+    "en": "Kirin R Yato"
+  },
+  "char_102_texas": {
+    "tw": "德克薩斯",
+    "cn": "德克萨斯",
+    "en": "Texas"
+  },
+  "char_1030_noirc2": {
+    "tw": "火龍S黑角",
+    "cn": "火龙S黑角",
+    "en": "Rathalos S Noir Corne"
+  },
+  "char_1031_slent2": {
+    "tw": "淬羽赫默",
+    "cn": "淬羽赫默",
+    "en": "Silence the Paradigmatic"
+  },
+  "char_1032_excu2": {
+    "tw": "聖約送葬人",
+    "cn": "圣约送葬人",
+    "en": "Executor the Ex Foedere"
+  },
+  "char_1033_swire2": {
+    "tw": "琳瑯詩懷雅",
+    "cn": "琳琅诗怀雅",
+    "en": "Swire the Elegant Wit"
+  },
+  "char_1034_jesca2": {
+    "tw": "滌火潔西卡",
+    "cn": "涤火杰西卡",
+    "en": "Jessica the Liberated"
+  },
+  "char_1035_wisdel": {
+    "tw": "維什戴爾",
+    "cn": "维什戴尔",
+    "en": "Wiš'adel"
+  },
+  "char_1036_fang2": {
+    "tw": "歷陣銳槍芬",
+    "cn": "历阵锐枪芬",
+    "en": "Fang the Fire-sharpened"
+  },
+  "char_1037_amiya3": {
+    "tw": "阿米婭",
+    "cn": "阿米娅",
+    "en": "Amiya"
+  },
+  "char_1038_whitw2": {
+    "tw": "荒蕪拉普蘭德",
+    "cn": "荒芜拉普兰德",
+    "en": "Lappland the Decadenza"
+  },
+  "char_1039_thorn2": {
+    "tw": "引星棘刺",
+    "cn": "引星棘刺",
+    "en": "Thorns the Lodestar"
+  },
+  "char_103_angel": {
+    "tw": "能天使",
+    "cn": "能天使",
+    "en": "Exusiai"
+  },
+  "char_1040_blaze2": {
+    "tw": "燭煌",
+    "cn": "烛煌",
+    "en": "Blaze the Igniting Spark"
+  },
+  "char_1041_angel2": {
+    "tw": "新約能天使",
+    "cn": "新约能天使",
+    "en": "Exusiai the New Covenant"
+  },
+  "char_1042_phatm2": {
+    "tw": "酒神",
+    "cn": "酒神",
+    "en": "Tragodia"
+  },
+  "char_1043_leizi2": {
+    "tw": "司霆驚蟄",
+    "cn": "司霆惊蛰",
+    "en": "Leizi the Thunderbringer"
+  },
+  "char_1044_hsgma2": {
+    "tw": "斬業星熊",
+    "cn": "斩业星熊",
+    "en": "Hoshiguma the Breacher"
+  },
+  "char_1045_svash2": {
+    "tw": "凜御銀灰",
+    "cn": "凛御银灰",
+    "en": "SilverAsh the Reignfrost"
+  },
+  "char_1046_sbell2": {
+    "tw": "聖聆初雪",
+    "cn": "圣聆初雪",
+    "en": "Pramanix the Prerita"
+  },
+  "char_1047_halo2": {
+    "tw": "溯光星源",
+    "cn": "溯光星源",
+    "en": "Astgenne the Lightchaser"
+  },
+  "char_1050_chen3": {
+    "tw": "赤刃明霄陳",
+    "cn": "赤刃明霄陈",
+    "en": "Ch'en the Dawnstreak"
+  },
+  "char_1051_headb2": {
+    "tw": "怒潮凜冬",
+    "cn": "怒潮凛冬",
+    "en": "Zima the Raging Tide"
+  },
+  "char_1052_kalts2": {
+    "tw": "凯爾希·思衡托",
+    "cn": "凯尔希·思衡托",
+    "en": "Kal'tsit·Esperanta"
+  },
+  "char_106_franka": {
+    "tw": "芙蘭卡",
+    "cn": "芙兰卡",
+    "en": "Franka"
+  },
+  "char_107_liskam": {
+    "tw": "雷蛇",
+    "cn": "雷蛇",
+    "en": "Liskarm"
+  },
+  "char_108_silent": {
+    "tw": "赫默",
+    "cn": "赫默",
+    "en": "Silence"
+  },
+  "char_109_fmout": {
+    "tw": "遠山",
+    "cn": "远山",
+    "en": "Gitano"
+  },
+  "char_110_deepcl": {
+    "tw": "深海色",
+    "cn": "深海色",
+    "en": "Deepcolor"
+  },
+  "char_112_siege": {
+    "tw": "推進之王",
+    "cn": "推进之王",
+    "en": "Siege"
+  },
+  "char_113_cqbw": {
+    "tw": "W",
+    "cn": "W",
+    "en": "W"
+  },
+  "char_115_headbr": {
+    "tw": "凜冬",
+    "cn": "凛冬",
+    "en": "Зима"
+  },
+  "char_117_myrrh": {
+    "tw": "末藥",
+    "cn": "末药",
+    "en": "Myrrh"
+  },
+  "char_118_yuki": {
+    "tw": "白雪",
+    "cn": "白雪",
+    "en": "ShiraYuki"
+  },
+  "char_120_hibisc": {
+    "tw": "芙蓉",
+    "cn": "芙蓉",
+    "en": "Hibiscus"
+  },
+  "char_121_lava": {
+    "tw": "炎熔",
+    "cn": "炎熔",
+    "en": "Lava"
+  },
+  "char_122_beagle": {
+    "tw": "米格魯",
+    "cn": "米格鲁",
+    "en": "Beagle"
+  },
+  "char_123_fang": {
+    "tw": "芬",
+    "cn": "芬",
+    "en": "Fang"
+  },
+  "char_124_kroos": {
+    "tw": "克洛絲",
+    "cn": "克洛丝",
+    "en": "Kroos"
+  },
+  "char_126_shotst": {
+    "tw": "流星",
+    "cn": "流星",
+    "en": "Meteor"
+  },
+  "char_127_estell": {
+    "tw": "艾絲黛爾",
+    "cn": "艾丝黛尔",
+    "en": "Estelle"
+  },
+  "char_128_plosis": {
+    "tw": "白面鴞",
+    "cn": "白面鸮",
+    "en": "Ptilopsis"
+  },
+  "char_129_bluep": {
+    "tw": "藍毒",
+    "cn": "蓝毒",
+    "en": "Blue Poison"
+  },
+  "char_130_doberm": {
+    "tw": "杜賓",
+    "cn": "杜宾",
+    "en": "Dobermann"
+  },
+  "char_131_flameb": {
+    "tw": "炎客",
+    "cn": "炎客",
+    "en": "Flamebringer"
+  },
+  "char_133_mm": {
+    "tw": "梅",
+    "cn": "梅",
+    "en": "May"
+  },
+  "char_134_ifrit": {
+    "tw": "伊芙利特",
+    "cn": "伊芙利特",
+    "en": "Ifrit"
+  },
+  "char_135_halo": {
+    "tw": "星源",
+    "cn": "星源",
+    "en": "Astgenne"
+  },
+  "char_136_hsguma": {
+    "tw": "星熊",
+    "cn": "星熊",
+    "en": "Hoshiguma"
+  },
+  "char_137_brownb": {
+    "tw": "獵蜂",
+    "cn": "猎蜂",
+    "en": "Beehunter"
+  },
+  "char_140_whitew": {
+    "tw": "拉普蘭德",
+    "cn": "拉普兰德",
+    "en": "Lappland"
+  },
+  "char_141_nights": {
+    "tw": "夜煙",
+    "cn": "夜烟",
+    "en": "Haze"
+  },
+  "char_143_ghost": {
+    "tw": "幽靈鯊",
+    "cn": "幽灵鲨",
+    "en": "Specter"
+  },
+  "char_144_red": {
+    "tw": "紅",
+    "cn": "红",
+    "en": "Projekt Red"
+  },
+  "char_145_prove": {
+    "tw": "普羅旺斯",
+    "cn": "普罗旺斯",
+    "en": "Provence"
+  },
+  "char_147_shining": {
+    "tw": "閃靈",
+    "cn": "闪灵",
+    "en": "Shining"
+  },
+  "char_148_nearl": {
+    "tw": "臨光",
+    "cn": "临光",
+    "en": "Nearl"
+  },
+  "char_149_scave": {
+    "tw": "清道夫",
+    "cn": "清道夫",
+    "en": "Scavenger"
+  },
+  "char_1502_crosly": {
+    "tw": "弒君者",
+    "cn": "弑君者",
+    "en": "Crownslayer"
+  },
+  "char_150_snakek": {
+    "tw": "蛇屠箱",
+    "cn": "蛇屠箱",
+    "en": "Cuora"
+  },
+  "char_151_myrtle": {
+    "tw": "桃金娘",
+    "cn": "桃金娘",
+    "en": "Myrtle"
+  },
+  "char_154_morgan": {
+    "tw": "摩根",
+    "cn": "摩根",
+    "en": "Morgan"
+  },
+  "char_155_tiger": {
+    "tw": "因陀羅",
+    "cn": "因陀罗",
+    "en": "Indra"
+  },
+  "char_157_dagda": {
+    "tw": "達格達",
+    "cn": "达格达",
+    "en": "Dagda"
+  },
+  "char_158_milu": {
+    "tw": "守林人",
+    "cn": "守林人",
+    "en": "Firewatch"
+  },
+  "char_159_peacok": {
+    "tw": "斷罪者",
+    "cn": "断罪者",
+    "en": "Conviction"
+  },
+  "char_163_hpsts": {
+    "tw": "火神",
+    "cn": "火神",
+    "en": "Vulcan"
+  },
+  "char_164_nightm": {
+    "tw": "夜魔",
+    "cn": "夜魔",
+    "en": "Nightmare"
+  },
+  "char_166_skfire": {
+    "tw": "天火",
+    "cn": "天火",
+    "en": "Skyfire"
+  },
+  "char_171_bldsk": {
+    "tw": "華法琳",
+    "cn": "华法琳",
+    "en": "Warfarin"
+  },
+  "char_172_svrash": {
+    "tw": "銀灰",
+    "cn": "银灰",
+    "en": "SilverAsh"
+  },
+  "char_173_slchan": {
+    "tw": "崖心",
+    "cn": "崖心",
+    "en": "Cliffheart"
+  },
+  "char_174_slbell": {
+    "tw": "初雪",
+    "cn": "初雪",
+    "en": "Pramanix"
+  },
+  "char_179_cgbird": {
+    "tw": "夜鶯",
+    "cn": "夜莺",
+    "en": "Nightingale"
+  },
+  "char_180_amgoat": {
+    "tw": "艾雅法拉",
+    "cn": "艾雅法拉",
+    "en": "Eyjafjalla"
+  },
+  "char_181_flower": {
+    "tw": "調香師",
+    "cn": "调香师",
+    "en": "Perfumer"
+  },
+  "char_183_skgoat": {
+    "tw": "地靈",
+    "cn": "地灵",
+    "en": "Earthspirit"
+  },
+  "char_185_frncat": {
+    "tw": "慕斯",
+    "cn": "慕斯",
+    "en": "Mousse"
+  },
+  "char_187_ccheal": {
+    "tw": "嘉維爾",
+    "cn": "嘉维尔",
+    "en": "Gavial"
+  },
+  "char_188_helage": {
+    "tw": "赫拉格",
+    "cn": "赫拉格",
+    "en": "Hellagur"
+  },
+  "char_190_clour": {
+    "tw": "紅雲",
+    "cn": "红云",
+    "en": "Vermeil"
+  },
+  "char_192_falco": {
+    "tw": "翎羽",
+    "cn": "翎羽",
+    "en": "Plume"
+  },
+  "char_193_frostl": {
+    "tw": "霜葉",
+    "cn": "霜叶",
+    "en": "Frostleaf"
+  },
+  "char_194_leto": {
+    "tw": "烈夏",
+    "cn": "烈夏",
+    "en": "Лето"
+  },
+  "char_195_glassb": {
+    "tw": "真理",
+    "cn": "真理",
+    "en": "Истина"
+  },
+  "char_196_sunbr": {
+    "tw": "古米",
+    "cn": "古米",
+    "en": "Гум"
+  },
+  "char_197_poca": {
+    "tw": "早露",
+    "cn": "早露",
+    "en": "Роса"
+  },
+  "char_198_blackd": {
+    "tw": "訊使",
+    "cn": "讯使",
+    "en": "Courier"
+  },
+  "char_199_yak": {
+    "tw": "角峰",
+    "cn": "角峰",
+    "en": "Matterhorn"
+  },
+  "char_2012_typhon": {
+    "tw": "提豐",
+    "cn": "提丰",
+    "en": "Typhon"
+  },
+  "char_2013_cerber": {
+    "tw": "刻俄柏",
+    "cn": "刻俄柏",
+    "en": "Ceobe"
+  },
+  "char_2014_nian": {
+    "tw": "年",
+    "cn": "年",
+    "en": "Nian"
+  },
+  "char_2015_dusk": {
+    "tw": "夕",
+    "cn": "夕",
+    "en": "Dusk"
+  },
+  "char_201_moeshd": {
+    "tw": "可頌",
+    "cn": "可颂",
+    "en": "Croissant"
+  },
+  "char_2023_ling": {
+    "tw": "令",
+    "cn": "令",
+    "en": "Ling"
+  },
+  "char_2024_chyue": {
+    "tw": "重岳",
+    "cn": "重岳",
+    "en": "Chongyue"
+  },
+  "char_2025_shu": {
+    "tw": "黍",
+    "cn": "黍",
+    "en": "Shu"
+  },
+  "char_2026_yu": {
+    "tw": "餘",
+    "cn": "余",
+    "en": "Yu"
+  },
+  "char_2027_wang": {
+    "tw": "望",
+    "cn": "望",
+    "en": "Wang"
+  },
+  "char_202_demkni": {
+    "tw": "塞雷婭",
+    "cn": "塞雷娅",
+    "en": "Saria"
+  },
+  "char_204_platnm": {
+    "tw": "白金",
+    "cn": "白金",
+    "en": "Platinum"
+  },
+  "char_206_gnosis": {
+    "tw": "靈知",
+    "cn": "灵知",
+    "en": "Gnosis"
+  },
+  "char_208_melan": {
+    "tw": "玫蘭莎",
+    "cn": "玫兰莎",
+    "en": "Melantha"
+  },
+  "char_209_ardign": {
+    "tw": "卡緹",
+    "cn": "卡缇",
+    "en": "Cardigan"
+  },
+  "char_210_stward": {
+    "tw": "史都華德",
+    "cn": "史都华德",
+    "en": "Steward"
+  },
+  "char_211_adnach": {
+    "tw": "安德切爾",
+    "cn": "安德切尔",
+    "en": "Adnachiel"
+  },
+  "char_212_ansel": {
+    "tw": "安賽爾",
+    "cn": "安赛尔",
+    "en": "Ansel"
+  },
+  "char_213_mostma": {
+    "tw": "莫斯提馬",
+    "cn": "莫斯提马",
+    "en": "Mostima"
+  },
+  "char_214_kafka": {
+    "tw": "卡夫卡",
+    "cn": "卡夫卡",
+    "en": "Kafka"
+  },
+  "char_215_mantic": {
+    "tw": "獅蠍",
+    "cn": "狮蝎",
+    "en": "Manticore"
+  },
+  "char_218_cuttle": {
+    "tw": "安哲拉",
+    "cn": "安哲拉",
+    "en": "Andreana"
+  },
+  "char_219_meteo": {
+    "tw": "隕星",
+    "cn": "陨星",
+    "en": "Meteorite"
+  },
+  "char_220_grani": {
+    "tw": "格拉尼",
+    "cn": "格拉尼",
+    "en": "Grani"
+  },
+  "char_222_bpipe": {
+    "tw": "風笛",
+    "cn": "风笛",
+    "en": "Bagpipe"
+  },
+  "char_225_haak": {
+    "tw": "阿",
+    "cn": "阿",
+    "en": "Aak"
+  },
+  "char_226_hmau": {
+    "tw": "吽",
+    "cn": "吽",
+    "en": "Hung"
+  },
+  "char_230_savage": {
+    "tw": "暴行",
+    "cn": "暴行",
+    "en": "Savage"
+  },
+  "char_235_jesica": {
+    "tw": "潔西卡",
+    "cn": "杰西卡",
+    "en": "Jessica"
+  },
+  "char_236_rope": {
+    "tw": "暗索",
+    "cn": "暗索",
+    "en": "Rope"
+  },
+  "char_237_gravel": {
+    "tw": "礫",
+    "cn": "砾",
+    "en": "Gravel"
+  },
+  "char_240_wyvern": {
+    "tw": "香草",
+    "cn": "香草",
+    "en": "Vanilla"
+  },
+  "char_241_panda": {
+    "tw": "食鐵獸",
+    "cn": "食铁兽",
+    "en": "FEater"
+  },
+  "char_242_otter": {
+    "tw": "梅爾",
+    "cn": "梅尔",
+    "en": "Mayer"
+  },
+  "char_243_waaifu": {
+    "tw": "槐琥",
+    "cn": "槐琥",
+    "en": "Waai Fu"
+  },
+  "char_245_cello": {
+    "tw": "塑心",
+    "cn": "塑心",
+    "en": "Virtuosa"
+  },
+  "char_248_mgllan": {
+    "tw": "麥哲倫",
+    "cn": "麦哲伦",
+    "en": "Magallan"
+  },
+  "char_249_mlyss": {
+    "tw": "繆爾賽思",
+    "cn": "缪尔赛思",
+    "en": "Muelsyse"
+  },
+  "char_250_phatom": {
+    "tw": "傀影",
+    "cn": "傀影",
+    "en": "Phantom"
+  },
+  "char_252_bibeak": {
+    "tw": "柏喙",
+    "cn": "柏喙",
+    "en": "Bibeak"
+  },
+  "char_253_greyy": {
+    "tw": "格雷伊",
+    "cn": "格雷伊",
+    "en": "Greyy"
+  },
+  "char_254_vodfox": {
+    "tw": "巫戀",
+    "cn": "巫恋",
+    "en": "Shamare"
+  },
+  "char_258_podego": {
+    "tw": "波登可",
+    "cn": "波登可",
+    "en": "Podenco"
+  },
+  "char_260_durnar": {
+    "tw": "堅雷",
+    "cn": "坚雷",
+    "en": "Dur-nar"
+  },
+  "char_261_sddrag": {
+    "tw": "葦草",
+    "cn": "苇草",
+    "en": "Reed"
+  },
+  "char_263_skadi": {
+    "tw": "斯卡蒂",
+    "cn": "斯卡蒂",
+    "en": "Skadi"
+  },
+  "char_264_f12yin": {
+    "tw": "山",
+    "cn": "山",
+    "en": "Mountain"
+  },
+  "char_265_sophia": {
+    "tw": "鞭刃",
+    "cn": "鞭刃",
+    "en": "Whislash"
+  },
+  "char_271_spikes": {
+    "tw": "芳汀",
+    "cn": "芳汀",
+    "en": "Arene"
+  },
+  "char_272_strong": {
+    "tw": "孑",
+    "cn": "孑",
+    "en": "Jaye"
+  },
+  "char_274_astesi": {
+    "tw": "星極",
+    "cn": "星极",
+    "en": "Astesia"
+  },
+  "char_275_breeze": {
+    "tw": "微風",
+    "cn": "微风",
+    "en": "Breeze"
+  },
+  "char_277_sqrrel": {
+    "tw": "阿消",
+    "cn": "阿消",
+    "en": "Shaw"
+  },
+  "char_278_orchid": {
+    "tw": "梓蘭",
+    "cn": "梓兰",
+    "en": "Orchid"
+  },
+  "char_279_excu": {
+    "tw": "送葬人",
+    "cn": "送葬人",
+    "en": "Executor"
+  },
+  "char_281_popka": {
+    "tw": "泡普卡",
+    "cn": "泡普卡",
+    "en": "Popukar"
+  },
+  "char_282_catap": {
+    "tw": "空爆",
+    "cn": "空爆",
+    "en": "Catapult"
+  },
+  "char_283_midn": {
+    "tw": "月見夜",
+    "cn": "月见夜",
+    "en": "Midnight"
+  },
+  "char_284_spot": {
+    "tw": "斑點",
+    "cn": "斑点",
+    "en": "Spot"
+  },
+  "char_285_medic2": {
+    "tw": "Lancet-2",
+    "cn": "Lancet-2",
+    "en": "Lancet-2"
+  },
+  "char_286_cast3": {
+    "tw": "Castle-3",
+    "cn": "Castle-3",
+    "en": "Castle-3"
+  },
+  "char_289_gyuki": {
+    "tw": "纏丸",
+    "cn": "缠丸",
+    "en": "Matoimaru"
+  },
+  "char_290_vigna": {
+    "tw": "紅豆",
+    "cn": "红豆",
+    "en": "Vigna"
+  },
+  "char_291_aglina": {
+    "tw": "安潔莉娜",
+    "cn": "安洁莉娜",
+    "en": "Angelina"
+  },
+  "char_293_thorns": {
+    "tw": "棘刺",
+    "cn": "棘刺",
+    "en": "Thorns"
+  },
+  "char_294_ayer": {
+    "tw": "斷崖",
+    "cn": "断崖",
+    "en": "Ayerscarpe"
+  },
+  "char_297_hamoni": {
+    "tw": "和弦",
+    "cn": "和弦",
+    "en": "Harmonie"
+  },
+  "char_298_susuro": {
+    "tw": "蘇蘇洛",
+    "cn": "苏苏洛",
+    "en": "Sussurro"
+  },
+  "char_300_phenxi": {
+    "tw": "菲亞梅塔",
+    "cn": "菲亚梅塔",
+    "en": "Fiammetta"
+  },
+  "char_301_cutter": {
+    "tw": "刻刀",
+    "cn": "刻刀",
+    "en": "Cutter"
+  },
+  "char_302_glaze": {
+    "tw": "安比爾",
+    "cn": "安比尔",
+    "en": "Ambriel"
+  },
+  "char_304_zebra": {
+    "tw": "暴雨",
+    "cn": "暴雨",
+    "en": "Heavyrain"
+  },
+  "char_306_leizi": {
+    "tw": "驚蟄",
+    "cn": "惊蛰",
+    "en": "Leizi"
+  },
+  "char_308_swire": {
+    "tw": "詩懷雅",
+    "cn": "诗怀雅",
+    "en": "Swire"
+  },
+  "char_311_mudrok": {
+    "tw": "泥岩",
+    "cn": "泥岩",
+    "en": "Mudrock"
+  },
+  "char_322_lmlee": {
+    "tw": "老鯉",
+    "cn": "老鲤",
+    "en": "Lee"
+  },
+  "char_325_bison": {
+    "tw": "拜松",
+    "cn": "拜松",
+    "en": "Bison"
+  },
+  "char_326_glacus": {
+    "tw": "格勞克斯",
+    "cn": "格劳克斯",
+    "en": "Glaucus"
+  },
+  "char_328_cammou": {
+    "tw": "卡達",
+    "cn": "卡达",
+    "en": "Click"
+  },
+  "char_332_archet": {
+    "tw": "空弦",
+    "cn": "空弦",
+    "en": "Archetto"
+  },
+  "char_333_sidero": {
+    "tw": "鑄鐵",
+    "cn": "铸铁",
+    "en": "Sideroca"
+  },
+  "char_336_folivo": {
+    "tw": "稀音",
+    "cn": "稀音",
+    "en": "Scene"
+  },
+  "char_337_utage": {
+    "tw": "宴",
+    "cn": "宴",
+    "en": "Utage"
+  },
+  "char_338_iris": {
+    "tw": "愛麗絲",
+    "cn": "爱丽丝",
+    "en": "Iris"
+  },
+  "char_340_shwaz": {
+    "tw": "黑",
+    "cn": "黑",
+    "en": "Schwarz"
+  },
+  "char_341_sntlla": {
+    "tw": "寒檀",
+    "cn": "寒檀",
+    "en": "Santalla"
+  },
+  "char_343_tknogi": {
+    "tw": "月禾",
+    "cn": "月禾",
+    "en": "Tsukinogi"
+  },
+  "char_344_beewax": {
+    "tw": "蜜蠟",
+    "cn": "蜜蜡",
+    "en": "Beeswax"
+  },
+  "char_345_folnic": {
+    "tw": "亞葉",
+    "cn": "亚叶",
+    "en": "Folinic"
+  },
+  "char_346_aosta": {
+    "tw": "奥斯塔",
+    "cn": "奥斯塔",
+    "en": "Aosta"
+  },
+  "char_347_jaksel": {
+    "tw": "傑克",
+    "cn": "杰克",
+    "en": "Jackie"
+  },
+  "char_348_ceylon": {
+    "tw": "錫蘭",
+    "cn": "锡兰",
+    "en": "Ceylon"
+  },
+  "char_349_chiave": {
+    "tw": "賈維",
+    "cn": "贾维",
+    "en": "Chiave"
+  },
+  "char_350_surtr": {
+    "tw": "史爾特爾",
+    "cn": "史尔特尔",
+    "en": "Surtr"
+  },
+  "char_355_ethan": {
+    "tw": "伊桑",
+    "cn": "伊桑",
+    "en": "Ethan"
+  },
+  "char_356_broca": {
+    "tw": "布洛卡",
+    "cn": "布洛卡",
+    "en": "Broca"
+  },
+  "char_358_lisa": {
+    "tw": "鈴蘭",
+    "cn": "铃兰",
+    "en": "Suzuran"
+  },
+  "char_362_saga": {
+    "tw": "嵯峨",
+    "cn": "嵯峨",
+    "en": "Saga"
+  },
+  "char_363_toddi": {
+    "tw": "熔泉",
+    "cn": "熔泉",
+    "en": "Toddifons"
+  },
+  "char_365_aprl": {
+    "tw": "四月",
+    "cn": "四月",
+    "en": "April"
+  },
+  "char_366_acdrop": {
+    "tw": "酸糖",
+    "cn": "酸糖",
+    "en": "Aciddrop"
+  },
+  "char_367_swllow": {
+    "tw": "灰喉",
+    "cn": "灰喉",
+    "en": "GreyThroat"
+  },
+  "char_369_bena": {
+    "tw": "貝娜",
+    "cn": "贝娜",
+    "en": "Bena"
+  },
+  "char_373_lionhd": {
+    "tw": "萊恩哈特",
+    "cn": "莱恩哈特",
+    "en": "Leonhardt"
+  },
+  "char_376_therex": {
+    "tw": "THRM-EX",
+    "cn": "THRM-EX",
+    "en": "Thermal-EX"
+  },
+  "char_377_gdglow": {
+    "tw": "澄閃",
+    "cn": "澄闪",
+    "en": "Goldenglow"
+  },
+  "char_378_asbest": {
+    "tw": "石棉",
+    "cn": "石棉",
+    "en": "Asbestos"
+  },
+  "char_379_sesa": {
+    "tw": "懾砂",
+    "cn": "慑砂",
+    "en": "Sesa"
+  },
+  "char_381_bubble": {
+    "tw": "泡泡",
+    "cn": "泡泡",
+    "en": "Bubble"
+  },
+  "char_383_snsant": {
+    "tw": "雪雉",
+    "cn": "雪雉",
+    "en": "Snowsant"
+  },
+  "char_385_finlpp": {
+    "tw": "清流",
+    "cn": "清流",
+    "en": "Purestream"
+  },
+  "char_388_mint": {
+    "tw": "薄綠",
+    "cn": "薄绿",
+    "en": "Mint"
+  },
+  "char_391_rosmon": {
+    "tw": "迷迭香",
+    "cn": "迷迭香",
+    "en": "Rosmontis"
+  },
+  "char_394_hadiya": {
+    "tw": "哈蒂婭",
+    "cn": "哈蒂娅",
+    "en": "Hadiya"
+  },
+  "char_4000_jnight": {
+    "tw": "正義騎士號",
+    "cn": "正义骑士号",
+    "en": "\"Justice Knight\""
+  },
+  "char_4004_pudd": {
+    "tw": "布丁",
+    "cn": "布丁",
+    "en": "Pudding"
+  },
+  "char_4006_melnte": {
+    "tw": "玫拉",
+    "cn": "玫拉",
+    "en": "Melanite"
+  },
+  "char_4009_irene": {
+    "tw": "艾麗妮",
+    "cn": "艾丽妮",
+    "en": "Irene"
+  },
+  "char_400_weedy": {
+    "tw": "溫蒂",
+    "cn": "温蒂",
+    "en": "Weedy"
+  },
+  "char_4010_etlchi": {
+    "tw": "隱德來希",
+    "cn": "隐德来希",
+    "en": "Entelechia"
+  },
+  "char_4011_lessng": {
+    "tw": "止頌",
+    "cn": "止颂",
+    "en": "Lessing"
+  },
+  "char_4013_kjera": {
+    "tw": "耶拉",
+    "cn": "耶拉",
+    "en": "Kjera"
+  },
+  "char_4014_lunacu": {
+    "tw": "子月",
+    "cn": "子月",
+    "en": "Lunacub"
+  },
+  "char_4015_spuria": {
+    "tw": "空構",
+    "cn": "空构",
+    "en": "Spuria"
+  },
+  "char_4016_kazema": {
+    "tw": "風丸",
+    "cn": "风丸",
+    "en": "Kazemaru"
+  },
+  "char_4017_puzzle": {
+    "tw": "謎圖",
+    "cn": "谜图",
+    "en": "Puzzle"
+  },
+  "char_4019_ncdeer": {
+    "tw": "九色鹿",
+    "cn": "九色鹿",
+    "en": "Nine-Colored Deer"
+  },
+  "char_401_elysm": {
+    "tw": "極境",
+    "cn": "极境",
+    "en": "Elysium"
+  },
+  "char_4023_rfalcn": {
+    "tw": "紅隼",
+    "cn": "红隼",
+    "en": "Kestrel"
+  },
+  "char_4025_aprot2": {
+    "tw": "暮落",
+    "cn": "暮落",
+    "en": "Shalem"
+  },
+  "char_4026_vulpis": {
+    "tw": "忍冬",
+    "cn": "忍冬",
+    "en": "Vulpisfoglia"
+  },
+  "char_4027_heyak": {
+    "tw": "霍爾海雅",
+    "cn": "霍尔海雅",
+    "en": "Ho'olheyak"
+  },
+  "char_402_tuye": {
+    "tw": "圖耶",
+    "cn": "图耶",
+    "en": "Tuye"
+  },
+  "char_4031_liesel": {
+    "tw": "復奏",
+    "cn": "复奏",
+    "en": "Ripresa"
+  },
+  "char_4032_provs": {
+    "tw": "但書",
+    "cn": "但书",
+    "en": "Proviso"
+  },
+  "char_4036_forcer": {
+    "tw": "見行者",
+    "cn": "见行者",
+    "en": "Enforcer"
+  },
+  "char_4037_demetr": {
+    "tw": "貝洛內",
+    "cn": "贝洛内",
+    "en": "Bellone"
+  },
+  "char_4039_horn": {
+    "tw": "號角",
+    "cn": "号角",
+    "en": "Horn"
+  },
+  "char_4040_rockr": {
+    "tw": "洛洛",
+    "cn": "洛洛",
+    "en": "Rockrock"
+  },
+  "char_4041_chnut": {
+    "tw": "褐果",
+    "cn": "褐果",
+    "en": "Chestnut"
+  },
+  "char_4042_lumen": {
+    "tw": "流明",
+    "cn": "流明",
+    "en": "Lumen"
+  },
+  "char_4043_erato": {
+    "tw": "埃拉托",
+    "cn": "埃拉托",
+    "en": "Erato"
+  },
+  "char_4045_heidi": {
+    "tw": "海蒂",
+    "cn": "海蒂",
+    "en": "Heidi"
+  },
+  "char_4046_ebnhlz": {
+    "tw": "黑鍵",
+    "cn": "黑键",
+    "en": "Ebenholz"
+  },
+  "char_4047_pianst": {
+    "tw": "車爾尼",
+    "cn": "车尔尼",
+    "en": "Czerny"
+  },
+  "char_4048_doroth": {
+    "tw": "多蘿西",
+    "cn": "多萝西",
+    "en": "Dorothy"
+  },
+  "char_4051_akkord": {
+    "tw": "協律",
+    "cn": "协律",
+    "en": "Akkord"
+  },
+  "char_4052_surfer": {
+    "tw": "尋瀾",
+    "cn": "寻澜",
+    "en": "Surfer"
+  },
+  "char_4054_malist": {
+    "tw": "至簡",
+    "cn": "至简",
+    "en": "Minimalist"
+  },
+  "char_4055_bgsnow": {
+    "tw": "鴻雪",
+    "cn": "鸿雪",
+    "en": "Позёмка"
+  },
+  "char_4056_titi": {
+    "tw": "緹緹",
+    "cn": "缇缇",
+    "en": "Titi"
+  },
+  "char_4058_pepe": {
+    "tw": "佩佩",
+    "cn": "佩佩",
+    "en": "Pepe"
+  },
+  "char_405_absin": {
+    "tw": "苦艾",
+    "cn": "苦艾",
+    "en": "Absinthe"
+  },
+  "char_4062_totter": {
+    "tw": "鉛踝",
+    "cn": "铅踝",
+    "en": "Totter"
+  },
+  "char_4063_quartz": {
+    "tw": "石英",
+    "cn": "石英",
+    "en": "Quartz"
+  },
+  "char_4064_mlynar": {
+    "tw": "瑪恩納",
+    "cn": "玛恩纳",
+    "en": "Młynar"
+  },
+  "char_4065_judge": {
+    "tw": "斥罪",
+    "cn": "斥罪",
+    "en": "Penance"
+  },
+  "char_4066_highmo": {
+    "tw": "海沫",
+    "cn": "海沫",
+    "en": "Highmore"
+  },
+  "char_4067_lolxh": {
+    "tw": "羅小黑",
+    "cn": "罗小黑",
+    "en": "Luo Xiaohei"
+  },
+  "char_4071_peper": {
+    "tw": "明椒",
+    "cn": "明椒",
+    "en": "Paprika"
+  },
+  "char_4072_ironmn": {
+    "tw": "白鐵",
+    "cn": "白铁",
+    "en": "Stainless"
+  },
+  "char_4077_palico": {
+    "tw": "泰拉大陸調查團",
+    "cn": "泰拉大陆调查团",
+    "en": "Terra Research Commission"
+  },
+  "char_4078_bdhkgt": {
+    "tw": "截雲",
+    "cn": "截云",
+    "en": "Jieyun"
+  },
+  "char_4079_haini": {
+    "tw": "海霓",
+    "cn": "海霓",
+    "en": "Lucilla"
+  },
+  "char_4080_lin": {
+    "tw": "林",
+    "cn": "林",
+    "en": "Lin"
+  },
+  "char_4081_warmy": {
+    "tw": "溫米",
+    "cn": "温米",
+    "en": "Warmy"
+  },
+  "char_4082_qiubai": {
+    "tw": "仇白",
+    "cn": "仇白",
+    "en": "Qiubai"
+  },
+  "char_4083_chimes": {
+    "tw": "鐸鈴",
+    "cn": "铎铃",
+    "en": "Wind Chimes"
+  },
+  "char_4087_ines": {
+    "tw": "伊內絲",
+    "cn": "伊内丝",
+    "en": "Ines"
+  },
+  "char_4088_hodrer": {
+    "tw": "赫德雷",
+    "cn": "赫德雷",
+    "en": "Hoederer"
+  },
+  "char_4091_ulika": {
+    "tw": "U-Official",
+    "cn": "U-Official",
+    "en": "U-Official"
+  },
+  "char_4093_frston": {
+    "tw": "Friston-3",
+    "cn": "Friston-3",
+    "en": "Friston-3"
+  },
+  "char_4098_vvana": {
+    "tw": "薇薇安娜",
+    "cn": "薇薇安娜",
+    "en": "Viviana"
+  },
+  "char_4100_caper": {
+    "tw": "躍躍",
+    "cn": "跃跃",
+    "en": "Caper"
+  },
+  "char_4102_threye": {
+    "tw": "凜視",
+    "cn": "凛视",
+    "en": "Valarqvin"
+  },
+  "char_4104_coldst": {
+    "tw": "冰釀",
+    "cn": "冰酿",
+    "en": "Coldshot"
+  },
+  "char_4105_almond": {
+    "tw": "杏仁",
+    "cn": "杏仁",
+    "en": "Almond"
+  },
+  "char_4106_bryota": {
+    "tw": "蒼苔",
+    "cn": "苍苔",
+    "en": "Bryophyta"
+  },
+  "char_4107_vrdant": {
+    "tw": "維荻",
+    "cn": "维荻",
+    "en": "Verdant"
+  },
+  "char_4109_baslin": {
+    "tw": "深律",
+    "cn": "深律",
+    "en": "Bassline"
+  },
+  "char_4110_delphn": {
+    "tw": "戴菲恩",
+    "cn": "戴菲恩",
+    "en": "Delphine"
+  },
+  "char_4114_harold": {
+    "tw": "哈洛德",
+    "cn": "哈洛德",
+    "en": "Harold"
+  },
+  "char_4116_blkkgt": {
+    "tw": "鐧",
+    "cn": "锏",
+    "en": "Degenbrecher"
+  },
+  "char_4117_ray": {
+    "tw": "萊伊",
+    "cn": "莱伊",
+    "en": "Ray"
+  },
+  "char_4119_wanqin": {
+    "tw": "萬頃",
+    "cn": "万顷",
+    "en": "Wanqing"
+  },
+  "char_411_tomimi": {
+    "tw": "特米米",
+    "cn": "特米米",
+    "en": "Tomimi"
+  },
+  "char_4121_zuole": {
+    "tw": "左樂",
+    "cn": "左乐",
+    "en": "Zuo Le"
+  },
+  "char_4122_grabds": {
+    "tw": "小滿",
+    "cn": "小满",
+    "en": "Grain Buds"
+  },
+  "char_4123_ela": {
+    "tw": "ELA",
+    "cn": "艾拉",
+    "en": "Ela"
+  },
+  "char_4124_iana": {
+    "tw": "IANA",
+    "cn": "双月",
+    "en": "Iana"
+  },
+  "char_4125_rdoc": {
+    "tw": "DOC",
+    "cn": "医生",
+    "en": "Doc"
+  },
+  "char_4126_fuze": {
+    "tw": "FUZE",
+    "cn": "导火索",
+    "en": "Fuze"
+  },
+  "char_4130_luton": {
+    "tw": "露托",
+    "cn": "露托",
+    "en": "Lutonada"
+  },
+  "char_4131_odda": {
+    "tw": "奧達",
+    "cn": "奥达",
+    "en": "Odda"
+  },
+  "char_4132_ascln": {
+    "tw": "阿斯卡綸",
+    "cn": "阿斯卡纶",
+    "en": "Ascalon"
+  },
+  "char_4133_logos": {
+    "tw": "邏各斯",
+    "cn": "逻各斯",
+    "en": "Logos"
+  },
+  "char_4134_cetsyr": {
+    "tw": "魔王",
+    "cn": "魔王",
+    "en": "Civilight Eterna"
+  },
+  "char_4136_phonor": {
+    "tw": "PhonoR-0",
+    "cn": "PhonoR-0",
+    "en": "PhonoR-0"
+  },
+  "char_4137_udflow": {
+    "tw": "深巡",
+    "cn": "深巡",
+    "en": "Underflow"
+  },
+  "char_4138_narant": {
+    "tw": "娜仁圖亞",
+    "cn": "娜仁图亚",
+    "en": "Narantuya"
+  },
+  "char_4139_papyrs": {
+    "tw": "莎草",
+    "cn": "莎草",
+    "en": "Papyrus"
+  },
+  "char_4140_lasher": {
+    "tw": "衡沙",
+    "cn": "衡沙",
+    "en": "Sand Reckoner"
+  },
+  "char_4141_marcil": {
+    "tw": "瑪露希爾",
+    "cn": "玛露西尔",
+    "en": "Marcille"
+  },
+  "char_4142_laios": {
+    "tw": "萊歐斯",
+    "cn": "莱欧斯",
+    "en": "Laios"
+  },
+  "char_4143_sensi": {
+    "tw": "先西",
+    "cn": "森西",
+    "en": "Senshi"
+  },
+  "char_4144_chilc": {
+    "tw": "奇爾查克",
+    "cn": "齐尔查克",
+    "en": "Chilchuck"
+  },
+  "char_4145_ulpia": {
+    "tw": "烏爾比安",
+    "cn": "乌尔比安",
+    "en": "Ulpianus"
+  },
+  "char_4146_nymph": {
+    "tw": "妮芙",
+    "cn": "妮芙",
+    "en": "Nymph"
+  },
+  "char_4147_mitm": {
+    "tw": "渡橋",
+    "cn": "渡桥",
+    "en": "Mitm"
+  },
+  "char_4148_philae": {
+    "tw": "菲萊",
+    "cn": "菲莱",
+    "en": "Philae"
+  },
+  "char_4151_tinman": {
+    "tw": "錫人",
+    "cn": "锡人",
+    "en": "Tin Man"
+  },
+  "char_4155_talr": {
+    "tw": "裁度",
+    "cn": "裁度",
+    "en": "Figurino"
+  },
+  "char_415_flint": {
+    "tw": "燧石",
+    "cn": "燧石",
+    "en": "Flint"
+  },
+  "char_4162_cathy": {
+    "tw": "凱瑟琳",
+    "cn": "凯瑟琳",
+    "en": "Catherine"
+  },
+  "char_4163_rosesa": {
+    "tw": "瑰鹽",
+    "cn": "瑰盐",
+    "en": "Rose Salt"
+  },
+  "char_4164_tecno": {
+    "tw": "特克諾",
+    "cn": "特克诺",
+    "en": "Tecno"
+  },
+  "char_4165_ctrail": {
+    "tw": "雲跡",
+    "cn": "云迹",
+    "en": "Contrail"
+  },
+  "char_4166_varkis": {
+    "tw": "擺渡人",
+    "cn": "摆渡人",
+    "en": "Varkáris"
+  },
+  "char_416_zumama": {
+    "tw": "森蚺",
+    "cn": "森蚺",
+    "en": "Eunectes"
+  },
+  "char_4171_wulfen": {
+    "tw": "鉬鉛",
+    "cn": "钼铅",
+    "en": "Wulfenite"
+  },
+  "char_4172_xingzh": {
+    "tw": "行箸",
+    "cn": "行箸",
+    "en": "Xingzhu"
+  },
+  "char_4173_nowell": {
+    "tw": "諾威爾",
+    "cn": "诺威尔",
+    "en": "Nowell"
+  },
+  "char_4177_brigid": {
+    "tw": "水燈心",
+    "cn": "水灯心",
+    "en": "Brigid"
+  },
+  "char_4178_alanna": {
+    "tw": "阿蘭娜",
+    "cn": "阿兰娜",
+    "en": "Alanna"
+  },
+  "char_4179_monstr": {
+    "tw": "Mon3tr",
+    "cn": "Mon3tr",
+    "en": "Mon3tr"
+  },
+  "char_4182_oblvns": {
+    "tw": "豐川祥子",
+    "cn": "丰川祥子",
+    "en": "Togawa Sakiko"
+  },
+  "char_4183_mortis": {
+    "tw": "若葉睦",
+    "cn": "若叶睦",
+    "en": "Wakaba Mutsumi"
+  },
+  "char_4184_dolris": {
+    "tw": "三角初華",
+    "cn": "三角初华",
+    "en": "Misumi Uika"
+  },
+  "char_4185_amoris": {
+    "tw": "祐天寺若麥",
+    "cn": "祐天寺若麦",
+    "en": "Yūtenji Nyamu"
+  },
+  "char_4186_tmoris": {
+    "tw": "八幡海鈴",
+    "cn": "八幡海铃",
+    "en": "Yahata Umiri"
+  },
+  "char_4187_graceb": {
+    "tw": "聆音",
+    "cn": "聆音",
+    "en": "Gracebearer"
+  },
+  "char_4188_confes": {
+    "tw": "CONFESS-47",
+    "cn": "CONFESS-47",
+    "en": "CONFESS-47"
+  },
+  "char_4191_tippi": {
+    "tw": "蒂比",
+    "cn": "蒂比",
+    "en": "Tippi"
+  },
+  "char_4193_lemuen": {
+    "tw": "蕾繆安",
+    "cn": "蕾缪安",
+    "en": "Lemuen"
+  },
+  "char_4194_rmixer": {
+    "tw": "信仰攪拌機",
+    "cn": "信仰搅拌机",
+    "en": "Sankta Miksaparato"
+  },
+  "char_4195_radian": {
+    "tw": "電弧",
+    "cn": "电弧",
+    "en": "Raidian"
+  },
+  "char_4196_reckpr": {
+    "tw": "錄武官",
+    "cn": "录武官",
+    "en": "Record Keeper"
+  },
+  "char_4198_christ": {
+    "tw": "Miss.Christine",
+    "cn": "Miss.Christine",
+    "en": "Miss.Christine"
+  },
+  "char_4199_makiri": {
+    "tw": "松桐",
+    "cn": "松桐",
+    "en": "Matsukiri"
+  },
+  "char_4202_haruka": {
+    "tw": "遙",
+    "cn": "遥",
+    "en": "Haruka"
+  },
+  "char_4203_kichi": {
+    "tw": "吉星",
+    "cn": "吉星",
+    "en": "Kichisei"
+  },
+  "char_4204_mantra": {
+    "tw": "真言",
+    "cn": "真言",
+    "en": "Mantra"
+  },
+  "char_4207_branch": {
+    "tw": "折椏",
+    "cn": "折桠",
+    "en": "Веточки"
+  },
+  "char_4208_wintim": {
+    "tw": "冬時",
+    "cn": "冬时",
+    "en": "Снегурочка"
+  },
+  "char_420_flamtl": {
+    "tw": "焰尾",
+    "cn": "焰尾",
+    "en": "Flametail"
+  },
+  "char_4211_snhunt": {
+    "tw": "雪獵",
+    "cn": "雪猎",
+    "en": "Snow Hunter"
+  },
+  "char_4212_nasti": {
+    "tw": "娜斯提",
+    "cn": "娜斯提",
+    "en": "Nasti"
+  },
+  "char_4213_skybx": {
+    "tw": "天空盒",
+    "cn": "天空盒",
+    "en": "Skybox"
+  },
+  "char_4214_cairn": {
+    "tw": "響石",
+    "cn": "响石",
+    "en": "Cairn"
+  },
+  "char_421_crow": {
+    "tw": "羽毛筆",
+    "cn": "羽毛笔",
+    "en": "La Pluma"
+  },
+  "char_4221_ju": {
+    "tw": "矩",
+    "cn": "矩",
+    "en": "Ju"
+  },
+  "char_4222_taraxa": {
+    "tw": "風絮",
+    "cn": "风絮",
+    "en": "Taraxacum"
+  },
+  "char_4223_botany": {
+    "tw": "伯塔尼",
+    "cn": "伯塔尼",
+    "en": "Ботани"
+  },
+  "char_4224_turdus": {
+    "tw": "烏啾",
+    "cn": "乌啾",
+    "en": "Укусик"
+  },
+  "char_4225_tanya": {
+    "tw": "裂響",
+    "cn": "裂响",
+    "en": "Crackborne"
+  },
+  "char_4226_veen": {
+    "tw": "維伊",
+    "cn": "维伊",
+    "en": "Вий"
+  },
+  "char_4227_gallus": {
+    "tw": "GALLUS²",
+    "cn": "GALLUS²",
+    "en": "GALLUS²"
+  },
+  "char_4228_closur": {
+    "tw": "可露希爾",
+    "cn": "可露希尔",
+    "en": "Closure"
+  },
+  "char_422_aurora": {
+    "tw": "極光",
+    "cn": "极光",
+    "en": "Aurora"
+  },
+  "char_423_blemsh": {
+    "tw": "瑕光",
+    "cn": "瑕光",
+    "en": "Blemishine"
+  },
+  "char_426_billro": {
+    "tw": "卡涅利安",
+    "cn": "卡涅利安",
+    "en": "Carnelian"
+  },
+  "char_427_vigil": {
+    "tw": "伺夜",
+    "cn": "伺夜",
+    "en": "Vigil"
+  },
+  "char_430_fartth": {
+    "tw": "遠牙",
+    "cn": "远牙",
+    "en": "Fartooth"
+  },
+  "char_431_ashlok": {
+    "tw": "灰毫",
+    "cn": "灰毫",
+    "en": "Ashlock"
+  },
+  "char_433_windft": {
+    "tw": "掠風",
+    "cn": "掠风",
+    "en": "Windflit"
+  },
+  "char_436_whispr": {
+    "tw": "絮雨",
+    "cn": "絮雨",
+    "en": "Whisperain"
+  },
+  "char_437_mizuki": {
+    "tw": "水月",
+    "cn": "水月",
+    "en": "Mizuki"
+  },
+  "char_440_pinecn": {
+    "tw": "松果",
+    "cn": "松果",
+    "en": "Pinecone"
+  },
+  "char_445_wscoot": {
+    "tw": "騁風",
+    "cn": "骋风",
+    "en": "Windscoot"
+  },
+  "char_446_aroma": {
+    "tw": "阿羅瑪",
+    "cn": "阿罗玛",
+    "en": "Aroma"
+  },
+  "char_449_glider": {
+    "tw": "蜜莓",
+    "cn": "蜜莓",
+    "en": "Honeyberry"
+  },
+  "char_450_necras": {
+    "tw": "死芒",
+    "cn": "死芒",
+    "en": "Necrass"
+  },
+  "char_451_robin": {
+    "tw": "羅賓",
+    "cn": "罗宾",
+    "en": "Robin"
+  },
+  "char_452_bstalk": {
+    "tw": "豆苗",
+    "cn": "豆苗",
+    "en": "Beanstalk"
+  },
+  "char_455_nothin": {
+    "tw": "烏有",
+    "cn": "乌有",
+    "en": "Mr.Nothing"
+  },
+  "char_456_ash": {
+    "tw": "ASH",
+    "cn": "灰烬",
+    "en": "Ash"
+  },
+  "char_457_blitz": {
+    "tw": "BLITZ",
+    "cn": "闪击",
+    "en": "Blitz"
+  },
+  "char_458_rfrost": {
+    "tw": "FROST",
+    "cn": "霜华",
+    "en": "Frost"
+  },
+  "char_459_tachak": {
+    "tw": "TACHANKA",
+    "cn": "战车",
+    "en": "Tachanka"
+  },
+  "char_464_cement": {
+    "tw": "洋灰",
+    "cn": "洋灰",
+    "en": "Cement"
+  },
+  "char_466_qanik": {
+    "tw": "雪絨",
+    "cn": "雪绒",
+    "en": "Qanipalaat"
+  },
+  "char_469_indigo": {
+    "tw": "深靛",
+    "cn": "深靛",
+    "en": "Indigo"
+  },
+  "char_472_pasngr": {
+    "tw": "異客",
+    "cn": "异客",
+    "en": "Passenger"
+  },
+  "char_473_mberry": {
+    "tw": "桑葚",
+    "cn": "桑葚",
+    "en": "Mulberry"
+  },
+  "char_474_glady": {
+    "tw": "歌蕾蒂婭",
+    "cn": "歌蕾蒂娅",
+    "en": "Gladiia"
+  },
+  "char_475_akafyu": {
+    "tw": "赤冬",
+    "cn": "赤冬",
+    "en": "Akafuyu"
+  },
+  "char_476_blkngt": {
+    "tw": "夜半",
+    "cn": "夜半",
+    "en": "Blacknight"
+  },
+  "char_478_kirara": {
+    "tw": "綺良",
+    "cn": "绮良",
+    "en": "Kirara"
+  },
+  "char_479_sleach": {
+    "tw": "琴柳",
+    "cn": "琴柳",
+    "en": "Saileach"
+  },
+  "char_484_robrta": {
+    "tw": "羅比菈塔",
+    "cn": "罗比菈塔",
+    "en": "Roberta"
+  },
+  "char_485_pallas": {
+    "tw": "帕拉斯",
+    "cn": "帕拉斯",
+    "en": "Pallas"
+  },
+  "char_486_takila": {
+    "tw": "龍舌蘭",
+    "cn": "龙舌兰",
+    "en": "Tequila"
+  },
+  "char_487_bobb": {
+    "tw": "波卜",
+    "cn": "波卜",
+    "en": "Bobbing"
+  },
+  "char_488_buildr": {
+    "tw": "青枳",
+    "cn": "青枳",
+    "en": "Poncirus"
+  },
+  "char_489_serum": {
+    "tw": "蝕清",
+    "cn": "蚀清",
+    "en": "Corroserum"
+  },
+  "char_491_humus": {
+    "tw": "休謨斯",
+    "cn": "休谟斯",
+    "en": "Humus"
+  },
+  "char_492_quercu": {
+    "tw": "夏櫟",
+    "cn": "夏栎",
+    "en": "Quercus"
+  },
+  "char_493_firwhl": {
+    "tw": "火哨",
+    "cn": "火哨",
+    "en": "Firewhistle"
+  },
+  "char_494_vendla": {
+    "tw": "刺玫",
+    "cn": "刺玫",
+    "en": "Vendela"
+  },
+  "char_496_wildmn": {
+    "tw": "野鬃",
+    "cn": "野鬃",
+    "en": "Wild Mane"
+  },
+  "char_497_ctable": {
+    "tw": "曉歌",
+    "cn": "晓歌",
+    "en": "Cantabile"
+  },
+  "char_498_inside": {
+    "tw": "隱現",
+    "cn": "隐现",
+    "en": "Insider"
+  },
+  "char_499_kaitou": {
+    "tw": "折光",
+    "cn": "折光",
+    "en": "Diamante"
+  },
+  "char_500_noirc": {
+    "tw": "黑角",
+    "cn": "黑角",
+    "en": "Noir Corne"
+  },
+  "char_501_durin": {
+    "tw": "杜林",
+    "cn": "杜林",
+    "en": "Durin"
+  },
+  "char_502_nblade": {
+    "tw": "夜刀",
+    "cn": "夜刀",
+    "en": "Yato"
+  },
+  "char_503_rang": {
+    "tw": "巡林者",
+    "cn": "巡林者",
+    "en": "Rangers"
+  }
+}

@@ -31,6 +31,8 @@ const dom = {
   defaultStatus:   $("default-status"),
   uploadNamemap:   $("upload-namemap"),
   namemapStatus:   $("namemap-status"),
+  namemapLangRow:  $("namemap-lang-row"),
+  btnClearNamemap: $("btn-clear-namemap"),
 
   canvasW:         $("canvas-w"),
   canvasH:         $("canvas-h"),
@@ -45,6 +47,13 @@ const dom = {
   titleY:          $("title-y"),
   titleW:          $("title-w"),
   titleH:          $("title-h"),
+
+  labelFontSelect: $("label-font-select"),
+  btnLoadLabelFonts: $("btn-load-label-fonts"),
+  labelFontPath:   $("label-font-path"),
+  labelFontSize:   $("label-font-size"),
+  labelColor:      $("label-color"),
+  labelAlign:      $("label-align"),
 
   btnResetLayout:  $("btn-reset-layout"),
   btnLoadDefault:  $("btn-load-default"),
@@ -118,6 +127,13 @@ function syncLayoutToForm() {
   dom.titleW.value        = l.title.width;
   dom.titleH.value        = l.title.height;
 
+  if (l.label_style) {
+    dom.labelFontPath.value  = l.label_style.font_path  || "";
+    dom.labelFontSize.value  = l.label_style.font_size  || 24;
+    dom.labelColor.value     = l.label_style.color      || "#ffffff";
+    dom.labelAlign.value     = l.label_style.align      || "center";
+  }
+
   const slotCount = l.image_slots.length;
   if (slotCount > 0) {
     state.playerCount = slotCount;
@@ -138,6 +154,12 @@ function collectLayoutFromForm() {
   l.title.y      = parseInt(dom.titleY.value) || 0;
   l.title.width  = parseInt(dom.titleW.value) || 1920;
   l.title.height = parseInt(dom.titleH.value) || 100;
+
+  if (!l.label_style) l.label_style = {};
+  l.label_style.font_path = dom.labelFontPath.value.trim();
+  l.label_style.font_size = parseInt(dom.labelFontSize.value) || 24;
+  l.label_style.color     = dom.labelColor.value;
+  l.label_style.align     = dom.labelAlign.value;
 }
 
 function onLayoutChanged() {
@@ -295,10 +317,73 @@ function bindEvents() {
   dom.uploadDefault.addEventListener("change", () =>
     uploadFile(dom.uploadDefault, "/api/upload/default_image", dom.defaultStatus)
   );
-  dom.uploadNamemap.addEventListener("change", () =>
-    uploadFile(dom.uploadNamemap, "/api/upload/namemap", dom.namemapStatus,
-      (d) => `已載入 ${d.count} 筆`)
-  );
+  // namemap 比對模式切換 → 顯示/隱藏語言選擇，同步 layout，有掃描結果則重新掃描
+  document.querySelectorAll("input[name='namemap-mode']").forEach((radio) => {
+    radio.addEventListener("change", () => {
+      dom.namemapLangRow.style.display = radio.value === "hr_dossier" ? "" : "none";
+      if (state.layout) state.layout.namemap_mode = radio.value;
+      _saveAndRescan();
+    });
+  });
+
+  // namemap 顯示語言切換 → 同步 layout，有掃描結果則重新掃描
+  document.querySelectorAll("input[name='namemap-lang']").forEach((radio) => {
+    radio.addEventListener("change", () => {
+      if (state.layout) state.layout.namemap_lang = radio.value;
+      _saveAndRescan();
+    });
+  });
+
+  dom.uploadNamemap.addEventListener("change", async () => {
+    const file = dom.uploadNamemap.files[0];
+    if (!file) return;
+    const mode = document.querySelector("input[name='namemap-mode']:checked")?.value || "normal";
+    const lang = document.querySelector("input[name='namemap-lang']:checked")?.value || "tw";
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("mode", mode);
+    formData.append("lang", lang);
+    setStatus(dom.namemapStatus, "上傳中...", "");
+    try {
+      const res = await fetch("/api/upload/namemap", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus(dom.namemapStatus, `✓ 已載入 ${data.count} 筆`, "ok");
+        // 同步回 state.layout，避免下次 immediateSaveLayout 覆蓋掉後端剛寫入的值
+        if (state.layout) {
+          state.layout.namemap_mode = mode;
+          state.layout.namemap_lang = lang;
+          state.layout.namemap_path = `static/uploads/namemap.json`;
+        }
+        // 有掃描結果則自動重新掃描，讓名稱立即更新
+        if (state.characters.length > 0 && state.baseDir) {
+          await scanCharacters();
+        }
+      } else {
+        setStatus(dom.namemapStatus, `✗ ${data.error}`, "err");
+      }
+    } catch {
+      setStatus(dom.namemapStatus, "✗ 網路錯誤", "err");
+    }
+  });
+
+  dom.btnClearNamemap.addEventListener("click", async () => {
+    await fetch("/api/upload/namemap/clear", { method: "POST" });
+    dom.uploadNamemap.value = "";
+    setStatus(dom.namemapStatus, "已清除", "ok");
+    if (state.layout) {
+      state.layout.namemap_path = "";
+      state.layout.namemap_mode = "normal";
+      state.layout.namemap_lang = "tw";
+    }
+    // 重置 radio 到預設值
+    const normalRadio = document.querySelector("input[name='namemap-mode'][value='normal']");
+    if (normalRadio) normalRadio.checked = true;
+    dom.namemapLangRow.style.display = "none";
+    if (state.characters.length > 0 && state.baseDir) {
+      await scanCharacters();
+    }
+  });
 
   // ── 掃描系統字型 ──
   dom.btnLoadFonts.addEventListener("click", async () => {
@@ -332,6 +417,40 @@ function bindEvents() {
   dom.titleFontSelect.addEventListener("change", () => {
     if (dom.titleFontSelect.value) {
       dom.titleFontPath.value = dom.titleFontSelect.value;
+    }
+  });
+
+  // 名字字型掃描
+  dom.btnLoadLabelFonts.addEventListener("click", async () => {
+    dom.btnLoadLabelFonts.textContent = "掃描中...";
+    try {
+      const res = await fetch("/api/fonts");
+      const data = await res.json();
+      if (data.ok && data.fonts.length > 0) {
+        dom.labelFontSelect.innerHTML = `<option value="">── 手動輸入路徑 ──</option>`;
+        let firstChinesePath = "";
+        data.fonts.forEach((f) => {
+          const opt = document.createElement("option");
+          opt.value = f.path;
+          opt.textContent = f.is_chinese ? `★ ${f.name}` : f.name;
+          dom.labelFontSelect.appendChild(opt);
+          if (f.is_chinese && !firstChinesePath) firstChinesePath = f.path;
+        });
+        dom.btnLoadLabelFonts.textContent = `✓ ${data.fonts.length} 個`;
+        if (firstChinesePath && !dom.labelFontPath.value) {
+          dom.labelFontSelect.value = firstChinesePath;
+          dom.labelFontPath.value = firstChinesePath;
+        }
+      }
+    } catch (e) {
+      dom.btnLoadLabelFonts.textContent = "失敗";
+    }
+  });
+
+  // 名字字型選擇 → 填入路徑欄
+  dom.labelFontSelect.addEventListener("change", () => {
+    if (dom.labelFontSelect.value) {
+      dom.labelFontPath.value = dom.labelFontSelect.value;
     }
   });
 
@@ -418,6 +537,14 @@ function bindEvents() {
   dom.btnGenerate.addEventListener("click", generateAll);
 }
 
+// ── 儲存後重新掃描（mode/lang/namemap 變更時呼叫）──
+async function _saveAndRescan() {
+  await immediateSaveLayout();
+  if (state.characters.length > 0 && state.baseDir) {
+    await scanCharacters();
+  }
+}
+
 // ── 掃描角色 ──────────────────────────────────
 async function scanCharacters() {
   collectPlayerFolders();
@@ -468,20 +595,36 @@ function renderCharacterList() {
   state.characters.forEach((char, i) => {
     const tag = document.createElement("div");
     tag.className = "char-tag" + (i === state.selectedCharIndex ? " selected" : "");
-    tag.textContent = char.display_name;
     tag.dataset.index = i;
-    tag.addEventListener("click", () => {
+
+    // 名稱區（點擊選取 + 預覽）
+    const label = document.createElement("span");
+    label.className = "char-tag-label";
+    label.textContent = char.display_name;
+    label.addEventListener("click", () => {
       state.selectedCharIndex = i;
       document.querySelectorAll(".char-tag").forEach((t) =>
         t.classList.toggle("selected", parseInt(t.dataset.index) === i)
       );
-      // 同步 toolbar 角色切換下拉
       dom.charSwitcherLabel.textContent = char.display_name;
       dom.charSwitcherList.querySelectorAll("li").forEach((el, j) =>
         el.classList.toggle("selected", j === i)
       );
       previewMgr.requestPreview();
     });
+
+    // 下載按鈕
+    const dlBtn = document.createElement("span");
+    dlBtn.className = "char-tag-dl";
+    dlBtn.title = `下載 ${char.display_name}.png`;
+    dlBtn.textContent = "⬇";
+    dlBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      _downloadSingle(char);
+    });
+
+    tag.appendChild(label);
+    tag.appendChild(dlBtn);
     dom.characterList.appendChild(tag);
   });
   // toolbar 角色切換下拉
@@ -536,6 +679,40 @@ export async function saveLayout(showStatus = false) {
   } catch (e) {
     if (showStatus) setStatus(dom.layoutStatus, `網路錯誤：${e.message}`, "err");
     return false;
+  }
+}
+
+// ── 單一檔案下載 ──────────────────────────────
+async function _downloadSingle(char) {
+  if (!state.baseDir || state.playerFolders.length === 0) {
+    setStatus(dom.generateStatus, "請先設定資料夾並掃描角色", "err");
+    return;
+  }
+  await immediateSaveLayout();
+  try {
+    const res = await fetch("/api/preview", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        base_dir: state.baseDir,
+        player_folders: state.playerFolders,
+        file_stem: char.file_stem,
+        display_name: char.display_name,
+      }),
+    });
+    if (!res.ok) {
+      setStatus(dom.generateStatus, "下載失敗", "err");
+      return;
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${char.display_name}.png`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    setStatus(dom.generateStatus, `下載失敗：${e.message}`, "err");
   }
 }
 
@@ -684,9 +861,15 @@ async function loadUploadsStatus() {
               style="height:48px;border-radius:3px;margin-top:4px;display:block">`, "ok");
     }
 
-    // 名稱對照表：顯示筆數
+    // 名稱對照表：顯示筆數，並還原 mode/lang radio
     if (data.namemap_count > 0) {
       setStatus(dom.namemapStatus, `✓ 已載入 ${data.namemap_count} 筆`, "ok");
+      const mode = state.layout?.namemap_mode || "normal";
+      const lang = state.layout?.namemap_lang || "tw";
+      const modeEl = document.querySelector(`input[name='namemap-mode'][value='${mode}']`);
+      if (modeEl) { modeEl.checked = true; dom.namemapLangRow.style.display = mode === "hr_dossier" ? "" : "none"; }
+      const langEl = document.querySelector(`input[name='namemap-lang'][value='${lang}']`);
+      if (langEl) langEl.checked = true;
     }
 
     // 個別玩家缺圖預設：顯示縮圖

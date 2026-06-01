@@ -227,7 +227,9 @@ input[type="file"] {
 }
 
 .char-tag {
-  padding: 3px 10px;
+  display: flex;
+  align-items: center;
+  gap: 0;
   border-radius: 20px;
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -235,9 +237,26 @@ input[type="file"] {
   cursor: pointer;
   user-select: none;
   transition: all 0.15s;
+  overflow: hidden;
 }
 .char-tag:hover { border-color: var(--accent); }
 .char-tag.selected { background: var(--accent); border-color: var(--accent); color: #fff; }
+.char-tag-label {
+  padding: 3px 8px 3px 10px;
+  flex: 1;
+}
+.char-tag-dl {
+  padding: 3px 7px 3px 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border-left: 1px solid var(--border);
+  line-height: 1;
+  transition: color 0.15s, background 0.15s;
+  flex-shrink: 0;
+}
+.char-tag-dl:hover { color: var(--accent); background: rgba(124,106,247,0.15); }
+.char-tag.selected .char-tag-dl { border-left-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.8); }
+.char-tag.selected .char-tag-dl:hover { color: #fff; background: rgba(255,255,255,0.15); }
 
 /* ── Slot Inputs ── */
 .slot-item {
@@ -421,27 +440,7 @@ input[type="file"] {
   line-height: 1.4;
 }
 
-/* ── Slot Item Extended ── */
-.slot-section {
-  background: var(--surface2);
-  border-radius: 6px;
-  padding: 8px 10px;
-  margin-bottom: 8px;
-  border: 1px solid var(--border);
-}
-.slot-section-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--accent);
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.slot-section-title .player-num {
-  font-size: 13px;
-  color: var(--text);
-}
+/* ── Slot Sub-sections ── */
 .slot-toggle {
   font-size: 11px;
   color: var(--text-muted);
@@ -453,9 +452,10 @@ input[type="file"] {
 }
 .slot-toggle:hover { border-color: var(--accent); color: var(--accent); }
 .slot-sub {
-  margin-top: 6px;
-  padding-top: 6px;
-  border-top: 1px solid var(--border);
+  padding: 6px 8px;
+  background: var(--surface2);
+  border-radius: 5px;
+  border: 1px solid var(--border);
 }
 .slot-sub-title {
   font-size: 11px;
@@ -589,6 +589,61 @@ input[type="file"] {
   color: var(--accent);
   background: rgba(124, 106, 247, 0.08);
 }
+
+/* ── Slot Accordion ── */
+.slot-section {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+.slot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--surface2);
+  cursor: pointer;
+  user-select: none;
+  gap: 6px;
+}
+.slot-header:hover { background: #2a2a45; }
+.slot-header .player-num {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+}
+.slot-header-badges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.slot-badge {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.slot-badge.on { border-color: var(--accent); color: var(--accent); }
+.slot-chevron {
+  font-size: 10px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+}
+.slot-section.open .slot-chevron { transform: rotate(180deg); }
+.slot-body {
+  display: none;
+  padding: 8px 10px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  flex-direction: column;
+  gap: 6px;
+}
+.slot-section.open .slot-body { display: flex; }
 
 /* ── Spinner ── */
 .spinner {

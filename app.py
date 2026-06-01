@@ -111,15 +111,11 @@ def _load_name_map(layout: Layout = None) -> dict:
     candidates = []
     if layout and layout.namemap_path:
         candidates.append(Path(layout.namemap_path))
-    for ext in [".csv", ".json"]:
-        candidates.append(UPLOAD_DIR / f"namemap{ext}")
+    candidates.append(UPLOAD_DIR / "namemap.json")
     for p in candidates:
         if p.exists():
             try:
-                if p.suffix.lower() == ".csv":
-                    return RosterManager.load_name_map_csv(p)
-                else:
-                    return RosterManager.load_name_map_json(p)
+                return RosterManager.load_name_map_json(p)
             except Exception:
                 pass
     return {}
@@ -133,18 +129,13 @@ def uploads_status():
 
     # 名稱對照表筆數
     namemap_count = 0
-    for ext in [".csv", ".json"]:
-        p = UPLOAD_DIR / f"namemap{ext}"
-        if p.exists():
-            try:
-                if ext == ".csv":
-                    nm = RosterManager.load_name_map_csv(p)
-                else:
-                    nm = RosterManager.load_name_map_json(p)
-                namemap_count = len(nm)
-            except Exception:
-                pass
-            break
+    p = UPLOAD_DIR / "namemap.json"
+    if p.exists():
+        try:
+            nm = RosterManager.load_name_map_json(p)
+            namemap_count = len(nm)
+        except Exception:
+            pass
 
     return jsonify({
         "ok": True,
@@ -370,10 +361,16 @@ def reset_layout():
     if CURRENT_LAYOUT_PATH.exists():
         try:
             current = Layout.load(CURRENT_LAYOUT_PATH)
-            new_layout.remember       = current.remember
-            new_layout.base_dir       = current.base_dir
-            new_layout.player_folders = current.player_folders
-            new_layout.player_count   = player_count
+            new_layout.remember            = current.remember
+            new_layout.base_dir            = current.base_dir
+            new_layout.player_folders      = current.player_folders
+            new_layout.player_count        = player_count
+            new_layout.background_path     = current.background_path
+            new_layout.default_image_path  = current.default_image_path
+            new_layout.player_default_paths = current.player_default_paths
+            new_layout.namemap_path        = current.namemap_path
+            new_layout.namemap_mode        = current.namemap_mode
+            new_layout.namemap_lang        = current.namemap_lang
         except Exception:
             pass
 
@@ -471,24 +468,36 @@ def upload_player_default_image(player_index: int):
 @app.route("/api/upload/namemap", methods=["POST"])
 def upload_namemap():
     f = request.files.get("file")
-    if not f or not _allowed_data(f.filename):
-        return jsonify({"ok": False, "error": "請上傳 CSV 或 JSON 檔案"}), 400
-    ext = Path(f.filename).suffix.lower()
-    save_path = UPLOAD_DIR / f"namemap{ext}"
+    if not f or Path(f.filename).suffix.lower() != ".json":
+        return jsonify({"ok": False, "error": "請上傳 JSON 檔案"}), 400
+    mode = request.form.get("mode", "normal")
+    lang = request.form.get("lang", "tw")
+    save_path = UPLOAD_DIR / "namemap.json"
     f.save(save_path)
     try:
-        if ext == ".csv":
-            name_map = RosterManager.load_name_map_csv(save_path)
-        else:
-            name_map = RosterManager.load_name_map_json(save_path)
-        # 寫入 layout
+        name_map = RosterManager.load_name_map_json(save_path)
         layout = _load_layout()
         layout.namemap_path = str(save_path).replace("\\", "/")
+        layout.namemap_mode = mode
+        layout.namemap_lang = lang
         _save_layout(layout)
         return jsonify({"ok": True, "count": len(name_map)})
     except Exception as e:
         save_path.unlink(missing_ok=True)
         return jsonify({"ok": False, "error": f"格式錯誤：{e}"}), 400
+
+
+@app.route("/api/upload/namemap/clear", methods=["POST"])
+def clear_namemap():
+    p = UPLOAD_DIR / "namemap.json"
+    if p.exists():
+        p.unlink()
+    layout = _load_layout()
+    layout.namemap_path = ""
+    layout.namemap_mode = "normal"
+    layout.namemap_lang = "tw"
+    _save_layout(layout)
+    return jsonify({"ok": True})
 
 
 # ── 掃描角色 ──────────────────────────────────
@@ -501,9 +510,16 @@ def scan_characters():
     if not base_dir or not player_folders:
         return jsonify({"ok": False, "error": "請填寫 base_dir 與 player_folders"}), 400
 
-    name_map = _load_name_map()
+    layout = _load_layout()
+    name_map = _load_name_map(layout)
     try:
-        manager = RosterManager(base_dir=base_dir, player_folders=player_folders, name_map=name_map)
+        manager = RosterManager(
+            base_dir=base_dir,
+            player_folders=player_folders,
+            name_map=name_map,
+            namemap_mode=layout.namemap_mode,
+            namemap_lang=layout.namemap_lang,
+        )
         characters = manager.scan_characters()
         return jsonify({
             "ok": True,

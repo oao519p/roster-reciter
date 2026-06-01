@@ -28,6 +28,13 @@ export class LayoutEditor {
   renderSlotInputs() {
     const { layout } = this.state;
     if (!layout) return;
+
+    // 記憶目前哪些 slot 是展開的
+    const openSet = new Set();
+    this.dom.slotInputs.querySelectorAll(".slot-section.open").forEach((el) => {
+      openSet.add(parseInt(el.dataset.i));
+    });
+
     // 記錄本次 render 時的 W/H，作為等比例計算的基準
     this._baseSlotW = {};
     this._baseSlotH = {};
@@ -39,26 +46,31 @@ export class LayoutEditor {
 
     layout.image_slots.forEach((slot, i) => {
       const sec = document.createElement("div");
-      sec.className = "slot-section";
+      sec.className = "slot-section";  // 預設收合
       sec.dataset.i = i;
 
-      // ── 標題列 ──
-      const titleRow = document.createElement("div");
-      titleRow.className = "slot-section-title";
-      titleRow.innerHTML = `
+      // ── 標題列（點擊展開/收合）──
+      const header = document.createElement("div");
+      header.className = "slot-header";
+      header.innerHTML = `
         <span class="player-num">玩家 ${slot.player_index + 1}</span>
-        <div style="display:flex;gap:4px">
-          <button class="slot-toggle av-toggle" data-i="${i}">
+        <div class="slot-header-badges">
+          <button class="slot-toggle av-toggle" data-i="${i}" title="切換頭像">
             ${slot.avatar.enabled ? "頭像 ✓" : "頭像 ○"}
           </button>
-          <button class="slot-toggle lb-toggle" data-i="${i}">
+          <button class="slot-toggle lb-toggle" data-i="${i}" title="切換名字">
             ${slot.label.enabled ? "名字 ✓" : "名字 ○"}
           </button>
         </div>
+        <span class="slot-chevron">▼</span>
       `;
-      sec.appendChild(titleRow);
+      sec.appendChild(header);
 
-      // ── 圖片框 X/Y/W/H ──
+      // ── 展開內容 ──
+      const body = document.createElement("div");
+      body.className = "slot-body";
+
+      // 圖片框 X/Y/W/H
       const imgGrid = document.createElement("div");
       imgGrid.className = "form-grid";
       imgGrid.style.gridTemplateColumns = "20px 1fr 20px 1fr";
@@ -68,9 +80,9 @@ export class LayoutEditor {
         <span>寬</span><input type="number" class="slot-w" data-i="${i}" value="${slot.width}" />
         <span>高</span><input type="number" class="slot-h" data-i="${i}" value="${slot.height}" />
       `;
-      sec.appendChild(imgGrid);
+      body.appendChild(imgGrid);
 
-      // ── 頭像設定 ──
+      // 頭像設定
       const avSub = document.createElement("div");
       avSub.className = "slot-sub";
       avSub.id = `av-sub-${i}`;
@@ -102,9 +114,9 @@ export class LayoutEditor {
           </label>
         </div>
       `;
-      sec.appendChild(avSub);
+      body.appendChild(avSub);
 
-      // ── 名字設定 ──
+      // 名字設定
       const lbSub = document.createElement("div");
       lbSub.className = "slot-sub";
       lbSub.id = `lb-sub-${i}`;
@@ -120,19 +132,6 @@ export class LayoutEditor {
         <div class="form-grid" style="margin-top:4px">
           <span>名字</span>
           <input type="text" class="lb-text" data-i="${i}" value="${slot.label.text}" placeholder="玩家名字" />
-          <span>字型路徑</span>
-          <input type="text" class="lb-font-path" data-i="${i}" value="${slot.label.style.font_path}" placeholder="留空=預設" />
-          <span>字體大小</span>
-          <input type="number" class="lb-font-size" data-i="${i}" value="${slot.label.style.font_size}" min="8" max="200" />
-          <span>顏色</span>
-          <input type="color" class="lb-color" data-i="${i}" value="${slot.label.style.color}"
-            style="width:44px;height:28px" />
-          <span>對齊</span>
-          <select class="lb-align" data-i="${i}">
-            <option value="center" ${slot.label.style.align === "center" ? "selected" : ""}>置中</option>
-            <option value="left"   ${slot.label.style.align === "left"   ? "selected" : ""}>靠左</option>
-            <option value="right"  ${slot.label.style.align === "right"  ? "selected" : ""}>靠右</option>
-          </select>
         </div>
         <div style="margin-top:4px">
           <label style="font-size:11px;color:var(--text-muted)">
@@ -145,8 +144,10 @@ export class LayoutEditor {
             style="width:44px;height:28px;margin-left:8px;${!slot.label.bg_color ? "display:none" : ""}" />
         </div>
       `;
-      sec.appendChild(lbSub);
+      body.appendChild(lbSub);
 
+      sec.appendChild(body);
+      if (openSet.has(i)) sec.classList.add("open");
       this.dom.slotInputs.appendChild(sec);
     });
 
@@ -159,9 +160,19 @@ export class LayoutEditor {
   _bindSlotEvents() {
     const { layout } = this.state;
 
-    // 頭像/名字 toggle
+    // accordion 展開/收合（點 header，但不含 toggle 按鈕）
+    this.dom.slotInputs.querySelectorAll(".slot-header").forEach((header) => {
+      header.addEventListener("click", (e) => {
+        if (e.target.closest(".slot-toggle")) return;  // toggle 按鈕不觸發展開
+        const sec = header.closest(".slot-section");
+        sec.classList.toggle("open");
+      });
+    });
+
+    // 頭像/名字 toggle（切換 enabled，重新 render；展開狀態由 renderSlotInputs 自動還原）
     this.dom.slotInputs.querySelectorAll(".av-toggle").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const i = parseInt(btn.dataset.i);
         layout.image_slots[i].avatar.enabled = !layout.image_slots[i].avatar.enabled;
         this.renderSlotInputs();
@@ -170,7 +181,8 @@ export class LayoutEditor {
       });
     });
     this.dom.slotInputs.querySelectorAll(".lb-toggle").forEach((btn) => {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
         const i = parseInt(btn.dataset.i);
         layout.image_slots[i].label.enabled = !layout.image_slots[i].label.enabled;
         this.renderSlotInputs();
@@ -255,11 +267,14 @@ export class LayoutEditor {
   // ── 同步按鈕 ─────────────────────────────────
   _bindSyncButton() {
     const btn = document.getElementById("btn-sync");
-    if (!btn) return;
-    btn.onclick = () => this._applySync();
+    if (btn) btn.onclick = () => this._applySyncSlot();
+
+    const btnSub = document.getElementById("btn-sync-sub");
+    if (btnSub) btnSub.onclick = () => this._applySyncSub();
   }
 
-  _applySync() {
+  // 同步角色框大小 / 位置
+  _applySyncSlot() {
     const { layout } = this.state;
     if (layout.image_slots.length < 2) return;
 
@@ -268,19 +283,25 @@ export class LayoutEditor {
     const syncAlignY = document.getElementById("sync-align-y")?.checked;
 
     const p1 = layout.image_slots[0];
-
     layout.image_slots.slice(1).forEach((slot) => {
-      // 角色框大小
-      if (syncSize) {
-        slot.width  = p1.width;
-        slot.height = p1.height;
-      }
-
-      // 對齊 X / Y
+      if (syncSize)   { slot.width = p1.width; slot.height = p1.height; }
       if (syncAlignX) slot.x = p1.x;
       if (syncAlignY) slot.y = p1.y;
+    });
 
-      // 頭像框：永遠同步相對位置、大小、樣式（保留各自上傳的圖片）
+    this.renderSlotInputs();
+    this.renderDragBoxes();
+    this._triggerAutoSave();
+  }
+
+  // 同步頭像框 / 名字框的相對位置、大小、enabled（各自圖片與名字文字保留）
+  _applySyncSub() {
+    const { layout } = this.state;
+    if (layout.image_slots.length < 2) return;
+
+    const p1 = layout.image_slots[0];
+    layout.image_slots.slice(1).forEach((slot) => {
+      // 頭像框：同步相對位置、大小、樣式
       const avRelX = p1.avatar.x - p1.x;
       const avRelY = p1.avatar.y - p1.y;
       slot.avatar.x        = slot.x + avRelX;
@@ -289,18 +310,17 @@ export class LayoutEditor {
       slot.avatar.bg_color = p1.avatar.bg_color;
       slot.avatar.enabled  = p1.avatar.enabled;
 
-      // 名字框：永遠同步相對位置、大小、樣式（保留各自的名字文字）
+      // 名字框：同步相對位置、大小、背景色、enabled（保留各自名字文字）
       const lbRelX = p1.label.x - p1.x;
       const lbRelY = p1.label.y - p1.y;
-      const savedText    = slot.label.text;   // 保留各自名字
+      const savedText    = slot.label.text;
       slot.label.x       = slot.x + lbRelX;
       slot.label.y       = slot.y + lbRelY;
       slot.label.width   = p1.label.width;
       slot.label.height  = p1.label.height;
       slot.label.bg_color= p1.label.bg_color;
       slot.label.enabled = p1.label.enabled;
-      slot.label.style   = { ...p1.label.style };
-      slot.label.text    = savedText;         // 還原各自名字
+      slot.label.text    = savedText;
     });
 
     this.renderSlotInputs();
@@ -340,11 +360,6 @@ export class LayoutEditor {
         slot.label.width  = parseInt(v("lb-w")) || 200;
         slot.label.height = parseInt(v("lb-h")) || 40;
         slot.label.text   = v("lb-text") || "";
-        slot.label.style.font_path  = v("lb-font-path") || "";
-        slot.label.style.font_size  = parseInt(v("lb-font-size")) || 24;
-        slot.label.style.color      = v("lb-color") || "#ffffff";
-        const lbAlign = document.querySelector(`.lb-align[data-i="${i}"]`);
-        slot.label.style.align = lbAlign?.value || "center";
         const lbTrans = document.querySelector(`.lb-transparent[data-i="${i}"]`);
         slot.label.bg_color = lbTrans?.checked ? "" : (v("lb-bg") || "");
       }

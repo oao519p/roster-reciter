@@ -94,7 +94,7 @@ def compose_slide(
 
         # ── 名字框 ──
         if slot.label.enabled:
-            _draw_label(canvas, draw, slot.label)
+            _draw_label(canvas, draw, slot.label, layout.label_style)
 
         # ── 頭像框 ──
         if slot.avatar.enabled:
@@ -153,8 +153,8 @@ def _draw_avatar(canvas: Image.Image, av: AvatarBox, av_path) -> None:
                        fill=(80, 80, 80), outline=(150, 150, 150), width=1)
 
 
-def _draw_label(canvas: Image.Image, draw: ImageDraw.Draw, lb: LabelBox) -> None:
-    """繪製玩家名字框"""
+def _draw_label(canvas: Image.Image, draw: ImageDraw.Draw, lb: LabelBox, style: "TextStyle" = None) -> None:
+    """繪製玩家名字框，style 為全局名字樣式（優先於 lb.style）"""
     x, y = lb.x, lb.y
     w, h = lb.width, lb.height
 
@@ -167,15 +167,16 @@ def _draw_label(canvas: Image.Image, draw: ImageDraw.Draw, lb: LabelBox) -> None
     if not lb.text:
         return
 
-    font = _get_font(lb.style)
+    effective_style = style if style is not None else lb.style
+    font = _get_font(effective_style)
     try:
-        color = ImageColor.getrgb(lb.style.color)
+        color = ImageColor.getrgb(effective_style.color)
     except ValueError:
         color = (255, 255, 255)
 
-    if lb.style.align == "left":
+    if effective_style.align == "left":
         tx, anchor = x, "lm"
-    elif lb.style.align == "right":
+    elif effective_style.align == "right":
         tx, anchor = x + w, "rm"
     else:
         tx, anchor = x + w // 2, "mm"
