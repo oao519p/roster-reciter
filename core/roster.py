@@ -45,13 +45,14 @@ class RosterManager:
         self.namemap_mode = namemap_mode
         self.namemap_lang = namemap_lang
 
-        # hr_dossier 模式：預先建立 {語言名稱 -> display_name} 的反查表，加速比對
-        self._hr_lookup: dict[str, str] = {}
+        # hr_dossier 模式：預先建立查找表，加速比對
+        self._hr_lookup: dict[str, str] = {}       # {任意語言名稱 → display_name}
+        self._char_aliases: dict[str, set] = {}    # {display_name → {所有語言名稱}}
         if namemap_mode == "hr_dossier":
             self._build_hr_lookup()
 
     def _build_hr_lookup(self) -> None:
-        """建立所有語言名稱 → display_name 的反查表（用於 substring 比對）"""
+        """建立所有語言名稱 → display_name 的反查表，以及 display_name → 所有別名的正查表"""
         lang = self.namemap_lang
         for entry in self.name_map.values():
             if not isinstance(entry, dict):
@@ -62,9 +63,16 @@ class RosterManager:
             if not display:
                 continue
             # 每個語言的名稱都加入 lookup，這樣不管圖片是哪個伺服器都能命中
+            aliases: set[str] = set()
             for name in entry.values():
                 if name:
                     self._hr_lookup[name] = display
+                    aliases.add(name)
+            # 合併同一 display_name 的所有別名（可能多個 entry 對應同一顯示名）
+            if display not in self._char_aliases:
+                self._char_aliases[display] = aliases
+            else:
+                self._char_aliases[display].update(aliases)
 
     def _resolve_display(self, stem: str) -> str:
         """根據 mode 解析 file_stem 對應的 display_name"""
@@ -110,10 +118,28 @@ class RosterManager:
 
     def get_image_path(self, player_index: int, file_stem: str):
         folder = self.base_dir / self.player_folders[player_index]
+
+        # 先嘗試精確檔名比對（同名檔案，適用 normal 模式或同伺服器）
         for ext in self.SUPPORTED_EXTENSIONS:
             candidate = folder / f"{file_stem}{ext}"
             if candidate.exists():
                 return candidate
+
+        # hr_dossier 模式：用角色的所有語言別名去資料夾掃描
+        if self.namemap_mode == "hr_dossier" and folder.exists():
+            # 取得此 file_stem 對應的 display_name，再查所有別名
+            display = self._resolve_display(file_stem)
+            aliases = self._char_aliases.get(display, set())
+            if aliases:
+                for f in folder.iterdir():
+                    if f.suffix.lower() not in self.SUPPORTED_EXTENSIONS:
+                        continue
+                    # 取 _ 後的 char_part 做比對
+                    stem = f.stem
+                    char_part = stem.split("_", 1)[1] if "_" in stem else stem
+                    if char_part in aliases:
+                        return f
+
         # fallback: 個別玩家預設 → 全局預設
         if player_index < len(self.player_default_images) and self.player_default_images[player_index]:
             return self.player_default_images[player_index]

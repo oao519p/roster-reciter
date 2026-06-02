@@ -172,12 +172,12 @@
 
         <!-- Step 4：圖片框位置 -->
         <section class="panel" id="panel-4">
-          <h2><span class="step-badge">4</span> 圖片框 / 頭像 / 名字</h2>
+          <h2><span class="step-badge">4</span> 圖片框 / 頭像 / 名字 / 入職日</h2>
 
-          <!-- 全局名字樣式 -->
-          <div class="layout-sub">
-            <label>🔤 名字文字樣式 <span class="hint">（所有玩家共用）</span></label>
-            <div class="form-grid">
+          <!-- 全局名字樣式（可收合） -->
+          <details class="layout-sub-collapsible">
+            <summary>🔤 名字文字樣式 <span class="hint">（所有玩家共用）</span></summary>
+            <div class="form-grid" style="margin-top:6px">
               <span>字型</span>
               <div style="display:flex;gap:4px;align-items:center">
                 <select id="label-font-select" style="flex:1">
@@ -198,7 +198,22 @@
                 <option value="right">靠右</option>
               </select>
             </div>
-          </div>
+          </details>
+
+          <!-- 全局入職日樣式（可收合） -->
+          <details class="layout-sub-collapsible">
+            <summary>📅 入職日樣式 <span class="hint">（所有玩家共用）</span></summary>
+            <div class="form-grid" style="margin-top:6px">
+              <span>字體大小</span>
+              <input type="number" id="date-font-size" value="24" min="8" max="200" />
+              <span>標籤底色</span>
+              <input type="color" id="date-label-color" value="#1a1a2e" title="「入職日」標籤的底色，文字顏色自動白/黑" />
+              <span>寬</span>
+              <input type="number" id="date-width" value="260" min="60" max="800" />
+              <span>高</span>
+              <input type="number" id="date-height" value="36" min="16" max="200" />
+            </div>
+          </details>
 
           <!-- 等比例 -->
           <div class="row-inline">
@@ -220,9 +235,9 @@
           </div>
 
           <div class="sync-bar" style="margin-top:6px">
-            <span class="sync-label">🔁 將 P1 頭像框 / 名字框位置同步到其他玩家</span>
-            <span class="sync-sublabel">各自上傳的頭像圖片與名字文字保留不變</span>
-            <button class="btn-secondary" id="btn-sync-sub" style="padding:5px 14px;font-size:12px;width:100%">🔁 同步頭像 / 名字框</button>
+            <span class="sync-label">🔁 將 P1 頭像框 / 名字框 / 入職日框位置同步到其他玩家</span>
+            <span class="sync-sublabel">各自上傳的頭像圖片、名字文字與日期保留不變</span>
+            <button class="btn-secondary" id="btn-sync-sub" style="padding:5px 14px;font-size:12px;width:100%">🔁 同步頭像 / 名字 / 入職日框</button>
           </div>
 
           <div id="slot-inputs"></div>

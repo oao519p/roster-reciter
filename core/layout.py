@@ -28,12 +28,23 @@ class TitleBox:
 
 @dataclass
 class AvatarBox:
-    """玩家頭像框（正方形，相對於畫布絕對座標）"""
+    """玩家頭像框（自由比例，相對於畫布絕對座標）"""
     enabled: bool = False
     x: int = 0
     y: int = 0
-    size: int = 60          # 寬高相同
+    width: int = 60
+    height: int = 60
     bg_color: str = ""      # 空字串 = 透明
+
+
+@dataclass
+class DateBox:
+    """入職日框（同一行：[入職日底色] 入職日 [白底] 20xx-xx-xx）
+    width/height 為全局設定，存於 Layout.date_style（date_width/date_height）"""
+    enabled: bool = False
+    x: int = 0
+    y: int = 0
+    date_text: str = ""     # 日期字串，例如 "2024-01-15"
 
 
 @dataclass
@@ -58,6 +69,7 @@ class ImageSlot:
     height: int = 400
     avatar: AvatarBox = field(default_factory=AvatarBox)
     label: LabelBox = field(default_factory=LabelBox)
+    date: DateBox = field(default_factory=DateBox)
 
 
 @dataclass
@@ -85,6 +97,9 @@ class Layout:
     namemap_mode: str = "normal"   # "normal" | "hr_dossier"
     namemap_lang: str = "tw"       # "tw" | "cn" | "en" | "jp"
     label_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#FFFFFF", align="center"))
+    date_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#1a1a2e", align="left"))
+    date_width: int = 260   # 入職日框全局寬度
+    date_height: int = 36   # 入職日框全局高度
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -100,15 +115,26 @@ class Layout:
         slots = []
         for s in data.get("image_slots", []):
             s = dict(s)
-            av_data = s.pop("avatar", {})
+            av_data = dict(s.pop("avatar", {}))
+            # 向下相容：舊格式只有 size，轉換為 width/height
+            if "size" in av_data and "width" not in av_data:
+                av_data["width"] = av_data.pop("size")
+                av_data["height"] = av_data["width"]
+            elif "size" in av_data:
+                av_data.pop("size")
             avatar = AvatarBox(**av_data) if av_data else AvatarBox()
             lb_data = s.pop("label", {})
             if lb_data:
+                lb_data = dict(lb_data)
                 lb_style = lb_data.pop("style", {})
                 label = LabelBox(**lb_data, style=TextStyle(**lb_style))
             else:
                 label = LabelBox()
-            slots.append(ImageSlot(**s, avatar=avatar, label=label))
+            dt_raw = dict(s.pop("date", {}))
+            dt_raw.pop("width", None)   # 向下相容：移除舊格式的 width/height
+            dt_raw.pop("height", None)
+            date = DateBox(**dt_raw) if dt_raw else DateBox()
+            slots.append(ImageSlot(**s, avatar=avatar, label=label, date=date))
 
         return cls(
             canvas=canvas,
@@ -125,6 +151,9 @@ class Layout:
             namemap_mode=data.get("namemap_mode", "normal"),
             namemap_lang=data.get("namemap_lang", "tw"),
             label_style=TextStyle(**data["label_style"]) if data.get("label_style") else TextStyle(font_size=24, color="#FFFFFF", align="center"),
+            date_style=TextStyle(**data["date_style"]) if data.get("date_style") else TextStyle(font_size=24, color="#1a1a2e", align="left"),
+            date_width=data.get("date_width", 260),
+            date_height=data.get("date_height", 36),
         )
 
     def save(self, path) -> None:
@@ -160,7 +189,7 @@ class Layout:
             avatar = AvatarBox(
                 enabled=False,
                 x=x, y=slot_y,
-                size=60, bg_color=""
+                width=60, height=60, bg_color=""
             )
             # label 預設：圖片框正下方置中
             label = LabelBox(
@@ -171,11 +200,17 @@ class Layout:
                 bg_color="",
                 style=TextStyle(font_size=24, color="#FFFFFF", align="center")
             )
+            # date 預設：label 正下方
+            date = DateBox(
+                enabled=False,
+                x=x, y=slot_y + slot_h + 8 + 36 + 4,
+                date_text=""
+            )
             slots.append(ImageSlot(
                 player_index=i,
                 x=x, y=slot_y,
                 width=slot_w, height=slot_h,
-                avatar=avatar, label=label
+                avatar=avatar, label=label, date=date
             ))
 
         return cls(
@@ -193,4 +228,7 @@ class Layout:
             namemap_mode="normal",
             namemap_lang="tw",
             label_style=TextStyle(font_size=24, color="#FFFFFF", align="center"),
+            date_style=TextStyle(font_size=24, color="#1a1a2e", align="left"),
+            date_width=260,
+            date_height=36,
         )

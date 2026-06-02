@@ -61,6 +61,9 @@ export class LayoutEditor {
           <button class="slot-toggle lb-toggle" data-i="${i}" title="切換名字">
             ${slot.label.enabled ? "名字 ✓" : "名字 ○"}
           </button>
+          <button class="slot-toggle dt-toggle" data-i="${i}" title="切換入職日">
+            ${slot.date.enabled ? "入職日 ✓" : "入職日 ○"}
+          </button>
         </div>
         <span class="slot-chevron">▼</span>
       `;
@@ -101,10 +104,13 @@ export class LayoutEditor {
         <div class="form-grid" style="grid-template-columns:30px 1fr 30px 1fr">
           <span>X</span><input type="number" class="av-x" data-i="${i}" value="${slot.avatar.x}" />
           <span>Y</span><input type="number" class="av-y" data-i="${i}" value="${slot.avatar.y}" />
-          <span>大小</span><input type="number" class="av-size" data-i="${i}" value="${slot.avatar.size}" />
+          <span>高</span><input type="number" class="av-h" data-i="${i}" value="${slot.avatar.height}" />
           <span>背景色</span><input type="color" class="av-bg" data-i="${i}"
             value="${slot.avatar.bg_color || "#000000"}"
             style="width:44px;height:28px" />
+        </div>
+        <div class="av-width-info" style="margin-top:4px;font-size:11px;color:var(--text-muted)">
+          寬度依比例自動計算（目前：${slot.avatar.width}px）
         </div>
         <div style="margin-top:4px">
           <label style="font-size:11px;color:var(--text-muted)">
@@ -116,35 +122,62 @@ export class LayoutEditor {
       `;
       body.appendChild(avSub);
 
-      // 名字設定
+      // 名字設定（可收合）
       const lbSub = document.createElement("div");
-      lbSub.className = "slot-sub";
+      lbSub.className = "slot-sub slot-collapsible";
       lbSub.id = `lb-sub-${i}`;
       lbSub.style.display = slot.label.enabled ? "" : "none";
       lbSub.innerHTML = `
-        <div class="slot-sub-title">🔤 名字</div>
-        <div class="form-grid" style="grid-template-columns:30px 1fr 30px 1fr">
-          <span>X</span><input type="number" class="lb-x" data-i="${i}" value="${slot.label.x}" />
-          <span>Y</span><input type="number" class="lb-y" data-i="${i}" value="${slot.label.y}" />
-          <span>W</span><input type="number" class="lb-w" data-i="${i}" value="${slot.label.width}" />
-          <span>H</span><input type="number" class="lb-h" data-i="${i}" value="${slot.label.height}" />
+        <div class="slot-sub-title slot-sub-toggle" data-target="lb-body-${i}">
+          🔤 名字 <span class="sub-chevron">▶</span>
         </div>
-        <div class="form-grid" style="margin-top:4px">
-          <span>名字</span>
-          <input type="text" class="lb-text" data-i="${i}" value="${slot.label.text}" placeholder="玩家名字" />
-        </div>
-        <div style="margin-top:4px">
-          <label style="font-size:11px;color:var(--text-muted)">
-            <input type="checkbox" class="lb-transparent" data-i="${i}"
-              ${!slot.label.bg_color ? "checked" : ""} style="width:auto" />
-            背景透明
-          </label>
-          <input type="color" class="lb-bg" data-i="${i}"
-            value="${slot.label.bg_color || "#000000"}"
-            style="width:44px;height:28px;margin-left:8px;${!slot.label.bg_color ? "display:none" : ""}" />
+        <div class="slot-sub-body" id="lb-body-${i}" style="display:none">
+          <div class="form-grid" style="grid-template-columns:30px 1fr 30px 1fr;margin-top:4px">
+            <span>X</span><input type="number" class="lb-x" data-i="${i}" value="${slot.label.x}" />
+            <span>Y</span><input type="number" class="lb-y" data-i="${i}" value="${slot.label.y}" />
+            <span>W</span><input type="number" class="lb-w" data-i="${i}" value="${slot.label.width}" />
+            <span>H</span><input type="number" class="lb-h" data-i="${i}" value="${slot.label.height}" />
+          </div>
+          <div class="form-grid" style="margin-top:4px">
+            <span>名字</span>
+            <input type="text" class="lb-text" data-i="${i}" value="${slot.label.text}" placeholder="玩家名字" />
+          </div>
+          <div style="margin-top:4px">
+            <label style="font-size:11px;color:var(--text-muted)">
+              <input type="checkbox" class="lb-transparent" data-i="${i}"
+                ${!slot.label.bg_color ? "checked" : ""} style="width:auto" />
+              背景透明
+            </label>
+            <input type="color" class="lb-bg" data-i="${i}"
+              value="${slot.label.bg_color || "#000000"}"
+              style="width:44px;height:28px;margin-left:8px;${!slot.label.bg_color ? "display:none" : ""}" />
+          </div>
         </div>
       `;
       body.appendChild(lbSub);
+
+      // 入職日設定（可收合）
+      const dtSub = document.createElement("div");
+      dtSub.className = "slot-sub slot-collapsible";
+      dtSub.id = `dt-sub-${i}`;
+      dtSub.style.display = slot.date.enabled ? "" : "none";
+      dtSub.innerHTML = `
+        <div class="slot-sub-title slot-sub-toggle" data-target="dt-body-${i}">
+          📅 入職日 <span class="sub-chevron">▶</span>
+        </div>
+        <div class="slot-sub-body" id="dt-body-${i}" style="display:none">
+          <div class="form-grid" style="grid-template-columns:30px 1fr 30px 1fr;margin-top:4px">
+            <span>X</span><input type="number" class="dt-x" data-i="${i}" value="${slot.date.x}" />
+            <span>Y</span><input type="number" class="dt-y" data-i="${i}" value="${slot.date.y}" />
+          </div>
+          <div class="form-grid" style="margin-top:4px">
+            <span>日期</span>
+            <input type="text" class="dt-text" data-i="${i}" value="${slot.date.date_text}"
+              placeholder="2024-01-15" />
+          </div>
+        </div>
+      `;
+      body.appendChild(dtSub);
 
       sec.appendChild(body);
       if (openSet.has(i)) sec.classList.add("open");
@@ -169,6 +202,19 @@ export class LayoutEditor {
       });
     });
 
+    // 名字框 / 入職日框子區塊收合
+    this.dom.slotInputs.querySelectorAll(".slot-sub-toggle").forEach((title) => {
+      title.addEventListener("click", () => {
+        const bodyId = title.dataset.target;
+        const body = document.getElementById(bodyId);
+        const chevron = title.querySelector(".sub-chevron");
+        if (!body) return;
+        const isOpen = body.style.display !== "none";
+        body.style.display = isOpen ? "none" : "";
+        if (chevron) chevron.textContent = isOpen ? "▶" : "▼";
+      });
+    });
+
     // 頭像/名字 toggle（切換 enabled，重新 render；展開狀態由 renderSlotInputs 自動還原）
     this.dom.slotInputs.querySelectorAll(".av-toggle").forEach((btn) => {
       btn.addEventListener("click", (e) => {
@@ -190,11 +236,21 @@ export class LayoutEditor {
         this._triggerAutoSave();
       });
     });
+    this.dom.slotInputs.querySelectorAll(".dt-toggle").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const i = parseInt(btn.dataset.i);
+        layout.image_slots[i].date.enabled = !layout.image_slots[i].date.enabled;
+        this.renderSlotInputs();
+        this.renderDragBoxes();
+        this._triggerAutoSave();
+      });
+    });
 
     // 頭像上傳
     this.dom.slotInputs.querySelectorAll(".av-upload").forEach((input) => {
       input.addEventListener("change", async () => {
-        const i = input.dataset.i;
+        const i = parseInt(input.dataset.i);
         const file = input.files[0];
         if (!file) return;
         const formData = new FormData();
@@ -206,6 +262,20 @@ export class LayoutEditor {
           if (thumb) {
             thumb.src = data.url + "?t=" + Date.now();
             thumb.style.display = "";
+          }
+          // 根據圖片實際比例更新 avatar.width/height（保持目前高度，等比例算寬度）
+          if (data.img_w && data.img_h) {
+            const slot = this.state.layout?.image_slots[i];
+            if (slot) {
+              const curH = slot.avatar.height || 60;
+              slot.avatar.width  = Math.round(curH * data.img_w / data.img_h);
+              slot.avatar.height = curH;
+              // 更新顯示文字
+              const info = document.querySelector(`#av-sub-${i} .av-width-info`);
+              if (info) info.textContent = `寬度依比例自動計算（目前：${slot.avatar.width}px）`;
+              this.renderDragBoxes();
+              this._triggerAutoSave();
+            }
           }
         }
       });
@@ -237,25 +307,39 @@ export class LayoutEditor {
     this.dom.slotInputs.querySelectorAll("input[type=number], input[type=text], input[type=color], select").forEach((el) => {
       const evt = el.tagName === "SELECT" ? "change" : "input";
       el.addEventListener(evt, () => {
-        // 等比例：從 DOM 讀「另一邊」的當前值計算 ratio，避免用到舊的 slot 值
+        const i = parseInt(el.dataset.i);
+        // 角色框等比例鎖定
         if (this._lockRatio && el.classList.contains("slot-w")) {
-          const i = parseInt(el.dataset.i);
           const newW = parseInt(el.value);
           if (!newW) return;
           const baseW = this._baseSlotW?.[i] || newW;
           const baseH = this._baseSlotH?.[i] || 1;
-          const ratio = baseH / baseW;   // 固定比例，不隨輸入變動
+          const ratio = baseH / baseW;
           const hEl = document.querySelector(`.slot-h[data-i="${i}"]`);
           if (hEl) hEl.value = Math.round(newW * ratio);
         } else if (this._lockRatio && el.classList.contains("slot-h")) {
-          const i = parseInt(el.dataset.i);
           const newH = parseInt(el.value);
           if (!newH) return;
           const baseW = this._baseSlotW?.[i] || 1;
           const baseH = this._baseSlotH?.[i] || newH;
-          const ratio = baseW / baseH;   // 固定比例
+          const ratio = baseW / baseH;
           const wEl = document.querySelector(`.slot-w[data-i="${i}"]`);
           if (wEl) wEl.value = Math.round(newH * ratio);
+        }
+        // 頭像框：改高度時等比例算寬度（必須在 collectSlotInputs 之前執行）
+        if (el.classList.contains("av-h")) {
+          const newH = parseInt(el.value);
+          if (newH > 0) {
+            const slot = this.state.layout?.image_slots[i];
+            if (slot && slot.avatar.height > 0) {
+              const oldH = slot.avatar.height;
+              const oldW = slot.avatar.width;
+              slot.avatar.width  = Math.round(newH * oldW / oldH);
+              slot.avatar.height = newH;   // 先更新 height，collectSlotInputs 不會再覆蓋 width
+              const info = document.querySelector(`#av-sub-${i} .av-width-info`);
+              if (info) info.textContent = `寬度依比例自動計算（目前：${slot.avatar.width}px）`;
+            }
+          }
         }
         this.collectSlotInputs();
         this.renderDragBoxes();
@@ -321,6 +405,17 @@ export class LayoutEditor {
       slot.label.bg_color= p1.label.bg_color;
       slot.label.enabled = p1.label.enabled;
       slot.label.text    = savedText;
+
+      // 入職日框：同步相對位置、大小、enabled（保留各自日期文字）
+      const dtRelX = p1.date.x - p1.x;
+      const dtRelY = p1.date.y - p1.y;
+      const savedDate    = slot.date.date_text;
+      slot.date.x        = slot.x + dtRelX;
+      slot.date.y        = slot.y + dtRelY;
+      slot.date.width    = p1.date.width;
+      slot.date.height   = p1.date.height;
+      slot.date.enabled  = p1.date.enabled;
+      slot.date.date_text = savedDate;
     });
 
     this.renderSlotInputs();
@@ -344,11 +439,12 @@ export class LayoutEditor {
       if (v("slot-w") !== null) slot.width  = parseInt(v("slot-w")) || 200;
       if (v("slot-h") !== null) slot.height = parseInt(v("slot-h")) || 400;
 
-      // avatar
+      // avatar（寬度由 _bindSlotEvents av-h 分支維護，這裡直接讀已算好的值）
       if (v("av-x") !== null) {
-        slot.avatar.x    = vi("av-x");
-        slot.avatar.y    = vi("av-y");
-        slot.avatar.size = parseInt(v("av-size")) || 60;
+        slot.avatar.x      = vi("av-x");
+        slot.avatar.y      = vi("av-y");
+        slot.avatar.height = parseInt(v("av-h")) || slot.avatar.height;
+        // width 已由 _bindSlotEvents 等比例算好，不在此覆蓋
         const avTrans = document.querySelector(`.av-transparent[data-i="${i}"]`);
         slot.avatar.bg_color = avTrans?.checked ? "" : (v("av-bg") || "");
       }
@@ -362,6 +458,13 @@ export class LayoutEditor {
         slot.label.text   = v("lb-text") || "";
         const lbTrans = document.querySelector(`.lb-transparent[data-i="${i}"]`);
         slot.label.bg_color = lbTrans?.checked ? "" : (v("lb-bg") || "");
+      }
+
+      // date（width/height 為全局，不在此讀取）
+      if (v("dt-x") !== null) {
+        slot.date.x         = vi("dt-x");
+        slot.date.y         = vi("dt-y");
+        slot.date.date_text = v("dt-text") || "";
       }
     });
   }
@@ -408,7 +511,7 @@ export class LayoutEditor {
         this._createDragBox({
           label: `A${slot.player_index + 1}`,
           x: slot.avatar.x * s, y: slot.avatar.y * s,
-          w: slot.avatar.size * s, h: slot.avatar.size * s,
+          w: slot.avatar.width * s, h: slot.avatar.height * s,
           className: "drag-box avatar-box",
           onMove: (dx, dy) => {
             slot.avatar.x = Math.round(slot.avatar.x + dx / s);
@@ -434,6 +537,24 @@ export class LayoutEditor {
           },
         });
       }
+
+      // 入職日框
+      if (slot.date.enabled) {
+        const dw = layout.date_width || 260;
+        const dh = layout.date_height || 36;
+        this._createDragBox({
+          label: `D${slot.player_index + 1}`,
+          x: slot.date.x * s, y: slot.date.y * s,
+          w: dw * s, h: dh * s,
+          className: "drag-box date-box",
+          onMove: (dx, dy) => {
+            slot.date.x = Math.round(slot.date.x + dx / s);
+            slot.date.y = Math.round(slot.date.y + dy / s);
+            this._syncFormFromSlot(layout.image_slots.indexOf(slot));
+            this.renderDragBoxes(); this._triggerAutoSave();
+          },
+        });
+      }
     });
   }
 
@@ -448,6 +569,7 @@ export class LayoutEditor {
     set("slot-x", slot.x); set("slot-y", slot.y);
     set("av-x", slot.avatar.x); set("av-y", slot.avatar.y);
     set("lb-x", slot.label.x);  set("lb-y", slot.label.y);
+    set("dt-x", slot.date.x);   set("dt-y", slot.date.y);
     this.onChanged();
   }
 

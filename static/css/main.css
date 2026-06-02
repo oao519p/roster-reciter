@@ -401,6 +401,8 @@ input[type="file"] {
 .drag-box.avatar-box:hover { background: rgba(106, 247, 201, 0.15); }
 .drag-box.label-box { border-color: #f76a9b; color: #f76a9b; border-style: dotted; }
 .drag-box.label-box:hover { background: rgba(247, 106, 155, 0.12); }
+.drag-box.date-box { border-color: #f7a96a; color: #f7a96a; border-style: dashed; }
+.drag-box.date-box:hover { background: rgba(247, 169, 106, 0.12); }
 
 /* ── Sync Bar ── */
 .sync-bar {
@@ -465,6 +467,55 @@ input[type="file"] {
   align-items: center;
   gap: 6px;
 }
+/* ── Collapsible layout-sub (details/summary) ── */
+.layout-sub-collapsible {
+  background: var(--surface2);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  padding: 0;
+  overflow: hidden;
+}
+.layout-sub-collapsible summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+}
+.layout-sub-collapsible summary::-webkit-details-marker { display: none; }
+.layout-sub-collapsible summary::before {
+  content: "▶";
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.layout-sub-collapsible[open] summary::before { transform: rotate(90deg); }
+.layout-sub-collapsible summary:hover { color: var(--accent); }
+.layout-sub-collapsible > div,
+.layout-sub-collapsible > .form-grid {
+  padding: 0 10px 8px;
+}
+
+.slot-sub-toggle {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.slot-sub-toggle:hover { color: var(--accent); }
+.sub-chevron {
+  font-size: 9px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
 .slot-avatar-upload {
   display: flex;
   align-items: center;

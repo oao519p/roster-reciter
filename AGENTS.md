@@ -46,13 +46,15 @@ roster-reciter/
 │   └── build_namemap.py      # 從 operator_data JSON 產生 namemap.json
 ├── config/
 │   ├── default_layout.json   # 出廠預設版面（重設時讀取，進版控）
-│   └── layout.json           # 使用者目前版面（自動儲存，gitignore）
+│   ├── layout.json           # 使用者目前版面（自動儲存，gitignore）
+│   └── namemap.json          # 角色名稱對照表（進版控）
 ├── core/
 │   ├── image_composer.py     # Pillow 圖片合成核心
 │   ├── layout.py             # 版面 dataclass（Layout / ImageSlot / TitleBox…）
 │   └── roster.py             # 角色掃描 / 名稱對照表
 ├── static/
 │   ├── css/main.css
+│   ├── fonts/                # 字型（Noto Sans TC）
 │   ├── js/
 │   │   ├── main.js           # 主要 UI 邏輯
 │   │   ├── layout-editor.js  # 版面拖拉編輯器
@@ -80,7 +82,7 @@ roster-reciter/
 | POST | `/api/upload/background/clear` | 清除背景圖 |
 | POST | `/api/upload/default_image` | 上傳全局缺圖預設 |
 | POST | `/api/upload/default_image/<n>` | 上傳玩家 n 的缺圖預設 |
-| POST | `/api/upload/avatar/<n>` | 上傳玩家 n 的頭像 |
+| POST | `/api/upload/avatar/<n>` | 上傳玩家 n 的頭像（回傳 `img_w`/`img_h` 供前端更新框比例） |
 | POST | `/api/upload/namemap` | 上傳角色名稱對照表（JSON），接受 `mode` / `lang` form fields |
 | POST | `/api/upload/namemap/clear` | 清除 namemap，重置 mode/lang 為預設值 |
 | GET | `/api/uploads/status` | 查詢各上傳資源是否存在 |
@@ -99,9 +101,15 @@ roster-reciter/
 - 工作環境欄位：`remember`（bool）、`base_dir`、`player_folders`、`player_count`
 - 資源路徑欄位：`background_path`、`default_image_path`、`player_default_paths`、`namemap_path`、`namemap_mode`、`namemap_lang`
 - **`label_style: TextStyle`** — 全局名字文字樣式（所有玩家共用，不 per-slot）
-- `ImageSlot` → 每位玩家的圖片框位置，含 `AvatarBox`（頭像）和 `LabelBox`（名字，只存位置/大小/文字/背景色，字型由 `label_style` 統一）
+- **`date_style: TextStyle`** — 全局入職日樣式（`color` 作為標籤底色，文字自動白/黑）
+- **`date_width: int` / `date_height: int`** — 入職日框全局尺寸
+- `ImageSlot` → 每位玩家的圖片框位置，含：
+  - `AvatarBox`（頭像，自由比例 `width/height`，不再強制正方形）
+  - `LabelBox`（名字，只存位置/大小/文字/背景色，字型由 `label_style` 統一）
+  - `DateBox`（入職日，只存 `enabled`/`x`/`y`/`date_text`，W/H 由全局設定）
 - `Layout.save()` / `Layout.load()` 讀寫 JSON
 - `Layout.make_default(player_count)` 產生預設版面
+- **向下相容**：舊 `layout.json` 的 `avatar.size` 自動轉換為 `width=height=size`
 
 ### `core/roster.py`
 - `RosterManager.scan_characters()` — 掃描第一位玩家資料夾，取得角色清單
@@ -110,12 +118,15 @@ roster-reciter/
 - `namemap_mode`：`normal`（檔名直接對應 key）或 `hr_dossier`（`序號_角色名` substring 比對）
 - `namemap_lang`：`tw` / `cn` / `en` / `jp`
 - HR Dossier 模式：先取 `_` 後的 `char_part` 做精確比對，找不到再做 substring fallback
+- **跨伺服器比對**：`_char_aliases` 建立 `{display_name → {所有語言別名}}`，`get_image_path` 找不到精確檔名時用別名掃描目標資料夾
 - CSV namemap 已移除
 
 ### `core/image_composer.py`
 - `compose_slide(layout, title_text, image_paths, ...)` — 主合成函式，回傳 PNG bytes
 - 圖片以 **cover** 模式裁切填滿框格（等比例縮放後中心裁切，無預設尺寸假設）
 - 名字框使用 `layout.label_style` 全局樣式，忽略 `slot.label.style`
+- 入職日框使用 `layout.date_style` + `layout.date_width/date_height`，字型固定 Noto Sans TC
+- 缺圖預設：半透明黑色覆蓋層 + NO INFO 白字置中（字體大小依框自動縮放）
 - 字型快取於 `_font_cache`，避免重複載入
 
 ### `tools/build_namemap.py`
@@ -134,7 +145,7 @@ roster-reciter/
 - `_downloadSingle(char)` → 呼叫 `/api/preview` 取得單一角色 PNG 並觸發下載
 - `immediateSaveLayout()` → 預覽前呼叫，確保後端用最新設定
 - `syncEnvToLayout()` → 將 baseDir / playerFolders / remember 注入 `state.layout` 再儲存
-- `syncLayoutToForm()` / `collectLayoutFromForm()` → 包含 `label_style` 的雙向同步
+- `syncLayoutToForm()` / `collectLayoutFromForm()` → 包含 `label_style`、`date_style`、`date_width`、`date_height` 的雙向同步
 
 ### `static/js/preview.js`
 - `requestPreview()` → 以目前選取角色呼叫 `/api/preview`，更新右側預覽圖
@@ -142,11 +153,14 @@ roster-reciter/
 
 ### `static/js/layout-editor.js`
 - `renderSlotInputs()` → 渲染每個玩家的 accordion 設定區塊，自動還原展開狀態
-- `renderDragBoxes()` → 在預覽圖上疊加可拖拉的方塊
+- `renderDragBoxes()` → 在預覽圖上疊加可拖拉的方塊（標題框/圖片框/頭像框/名字框/入職日框）
 - `_refreshAvatarThumbs()` → 查詢 `/api/uploads/status`，只對 `avatar.enabled=true` 的 slot 填入縮圖 src
 - `collectSlotInputs()` → 將表單值收集回 `state.layout.image_slots`（不含字型欄位，字型由全局 label_style 管理）
 - `_applySyncSlot()` → 同步角色框大小/位置（受 size/alignX/alignY checkbox 控制）
-- `_applySyncSub()` → 同步頭像框/名字框相對位置、大小、enabled（各自圖片與名字文字保留）
+- `_applySyncSub()` → 同步頭像框/名字框/入職日框相對位置、大小、enabled（各自圖片、名字文字與日期保留）
+- 頭像框：只顯示高度輸入，寬度由 `_bindSlotEvents` 的 `av-h` 分支等比例計算；上傳後根據圖片實際比例更新
+- 入職日框：個人設定只留 X/Y + 日期文字，W/H 由全局 `date_width/date_height` 管理
+- 名字框/入職日框子區塊：可點擊標題列收合/展開
 
 ---
 
@@ -157,7 +171,7 @@ roster-reciter/
 | 1 | 資料夾 | base_dir、玩家數量、玩家資料夾、**namemap 設定（模式/語言/上傳/清除）**、掃描按鈕 |
 | 2 | 資源 | 背景圖、全局缺圖、個別玩家缺圖 |
 | 3 | 版面 | 畫布尺寸、背景色、標題文字樣式（含字型掃描）、重設版面 |
-| 4 | 圖片框 | **名字文字樣式（全局，含字型掃描）**、等比例鎖定、同步角色框、同步頭像/名字框、各玩家 accordion |
+| 4 | 圖片框 | **名字文字樣式（全局可收合，含字型掃描）**、**入職日樣式（全局可收合，含 W/H）**、等比例鎖定、同步角色框、同步頭像/名字/入職日框、各玩家 accordion（含頭像/名字/入職日 toggle） |
 | 5 | 生成 | 角色標籤列表（含單一 ⬇ 下載）、批量生成 ZIP |
 
 ---
@@ -176,7 +190,7 @@ roster-reciter/
 ## 常見問題 / 陷阱
 
 1. **venv 執行檔缺失**：`venv/Scripts/python.exe` 不存在時，需重建 venv。
-2. **中文字型**：`label_style.font_path` 與 `title.style.font_path` 都必須指向支援中文的 TTF/TTC，例如 `C:/Windows/Fonts/msjh.ttc`。
+2. **中文字型**：`label_style.font_path` 與 `title.style.font_path` 都必須指向支援中文的 TTF/TTC，例如 `C:/Windows/Fonts/msjh.ttc`。入職日框字型固定使用 `static/fonts/NotoSansCJKtc-Regular.otf`。
 3. **背景圖快取**：Flask 已設定 `SEND_FILE_MAX_AGE_DEFAULT = 0`，預覽時加 `?t=timestamp` 防快取。
 4. **上傳大小限制**：`MAX_CONTENT_LENGTH = 50MB`，超大圖片需先壓縮。
 5. **`/api/browse/folder`**：使用 `tkinter` 開啟原生對話框，需在有 GUI 的環境執行。
@@ -185,3 +199,7 @@ roster-reciter/
 8. **namemap_path 保留**：`/api/layout/default` 重設版面時會保留所有資源路徑（`background_path`、`namemap_path` 等），不會清除已上傳的資源設定。
 9. **namemap mode/lang 同步**：上傳 namemap 或切換 mode/lang radio 後，`state.layout.namemap_mode/lang` 會立即更新，避免後續 `immediateSaveLayout()` 覆蓋掉正確值。
 10. **圖片裁切**：cover 模式不假設圖片尺寸，框格寬高比決定裁切結果，建議框格比例與來源圖片一致。
+11. **頭像框比例**：`AvatarBox` 改為 `width/height` 自由比例，UI 只顯示高度輸入，寬度等比例自動計算。上傳頭像後自動根據圖片比例更新。舊 `layout.json` 的 `avatar.size` 會自動轉換。
+12. **跨伺服器比對**：HR Dossier 模式下，`get_image_path` 會用 `_char_aliases` 掃描目標資料夾，支援繁中/簡中/英文跨伺服器自動對應。`preview_slide` 和 `generate_all` 端點已正確傳入 `namemap_mode/lang`。
+13. **入職日框**：W/H 為全局設定（`date_width/date_height`），個人只設 X/Y + 日期文字。`date_style.color` 作為「入職日」標籤底色，文字顏色自動白/黑。
+14. **全局設定區收合**：Step 4 的名字/入職日全局設定使用 `<details>/<summary>` 原生收合，預設收合。

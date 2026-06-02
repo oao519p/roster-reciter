@@ -55,6 +55,11 @@ const dom = {
   labelColor:      $("label-color"),
   labelAlign:      $("label-align"),
 
+  dateFontSize:    $("date-font-size"),
+  dateLabelColor:  $("date-label-color"),
+  dateWidth:       $("date-width"),
+  dateHeight:      $("date-height"),
+
   btnResetLayout:  $("btn-reset-layout"),
   btnLoadDefault:  $("btn-load-default"),
   layoutStatus:    $("layout-status"),
@@ -134,6 +139,13 @@ function syncLayoutToForm() {
     dom.labelAlign.value     = l.label_style.align      || "center";
   }
 
+  if (l.date_style) {
+    dom.dateFontSize.value   = l.date_style.font_size   || 24;
+    dom.dateLabelColor.value = l.date_style.color       || "#1a1a2e";
+  }
+  dom.dateWidth.value  = l.date_width  || 260;
+  dom.dateHeight.value = l.date_height || 36;
+
   const slotCount = l.image_slots.length;
   if (slotCount > 0) {
     state.playerCount = slotCount;
@@ -160,6 +172,13 @@ function collectLayoutFromForm() {
   l.label_style.font_size = parseInt(dom.labelFontSize.value) || 24;
   l.label_style.color     = dom.labelColor.value;
   l.label_style.align     = dom.labelAlign.value;
+
+  if (!l.date_style) l.date_style = {};
+  l.date_style.font_size  = parseInt(dom.dateFontSize.value) || 24;
+  l.date_style.color      = dom.dateLabelColor.value;
+  l.date_style.align      = "left";
+  l.date_width  = parseInt(dom.dateWidth.value)  || 260;
+  l.date_height = parseInt(dom.dateHeight.value) || 36;
 }
 
 function onLayoutChanged() {

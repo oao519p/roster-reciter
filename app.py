@@ -280,7 +280,9 @@ def _read_font_name(path: str) -> tuple[str, str]:
 def list_fonts():
     """掃描系統字型資料夾，回傳 TTF/TTC 清單（含中文顯示名稱）"""
     import os
+    fonts_static = str(BASE_DIR / "static" / "fonts")
     font_dirs = [
+        fonts_static,
         r"C:\Windows\Fonts",
         os.path.expanduser("~\\AppData\\Local\\Microsoft\\Windows\\Fonts"),
     ]
@@ -310,7 +312,7 @@ def list_fonts():
     # 標記中文字型：只比對英文 family name 和路徑中的明確關鍵字，避免誤判
     chinese_keywords = [
         "jheng", "jhenghei", "mingliu", "mingliub", "dfkai", "simsun", "simhei",
-        "noto sans cjk", "noto serif cjk", "yahei", "heiti", "kaiu",
+        "noto sans cjk", "noto serif cjk", "notosanscjk", "yahei", "heiti", "kaiu",
         "微軟", "新細明", "標楷", "黑體", "宋體", "正黑", "細明",
     ]
     for f in fonts:
@@ -399,8 +401,10 @@ def upload_avatar(player_index: int):
         return jsonify({"ok": False, "error": "不支援的檔案格式"}), 400
     save_path = UPLOAD_DIR / f"avatar_{player_index}.png"
     img = Image.open(io.BytesIO(f.read())).convert("RGBA")
+    img_w, img_h = img.size
     img.save(save_path, format="PNG")
-    return jsonify({"ok": True, "url": f"/static/uploads/avatar_{player_index}.png"})
+    return jsonify({"ok": True, "url": f"/static/uploads/avatar_{player_index}.png",
+                    "img_w": img_w, "img_h": img_h})
 
 
 @app.route("/api/upload/background/clear", methods=["POST"])
@@ -547,6 +551,8 @@ def preview_slide():
         name_map=_load_name_map(layout),
         default_image=_get_default_image_path(layout),
         player_default_images=_get_player_default_paths_from_layout(layout),
+        namemap_mode=layout.namemap_mode,
+        namemap_lang=layout.namemap_lang,
     )
     image_paths = [manager.get_image_path(i, file_stem) for i in range(len(player_folders))]
     avatar_paths = _get_avatar_paths(len(player_folders))
@@ -585,6 +591,8 @@ def generate_all():
         name_map=_load_name_map(layout),
         default_image=_get_default_image_path(layout),
         player_default_images=_get_player_default_paths_from_layout(layout),
+        namemap_mode=layout.namemap_mode,
+        namemap_lang=layout.namemap_lang,
     )
     bg_path = _get_background_path(layout)
     avatar_paths = _get_avatar_paths(len(player_folders))
