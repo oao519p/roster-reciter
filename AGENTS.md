@@ -143,9 +143,11 @@ roster-reciter/
 - `scanCharacters()` → 呼叫 `/api/scan`，掃描完成後自動預覽第一個角色
 - `_saveAndRescan()` → 儲存 layout 後若已有掃描結果則自動重新掃描（namemap mode/lang 變更時呼叫）
 - `_downloadSingle(char)` → 呼叫 `/api/preview` 取得單一角色 PNG 並觸發下載
+- `generateAll()` → 批量生成 ZIP，自訂角色 `file_stem` 映射為 `"__blank__"`
 - `immediateSaveLayout()` → 預覽前呼叫，確保後端用最新設定
 - `syncEnvToLayout()` → 將 baseDir / playerFolders / remember 注入 `state.layout` 再儲存
 - `syncLayoutToForm()` / `collectLayoutFromForm()` → 包含 `label_style`、`date_style`、`date_width`、`date_height` 的雙向同步
+- **自訂角色**：`btnAddChar` 點擊後 `prompt` 輸入名稱，建立 `{file_stem: "__custom__N", display_name, _custom: true}` 物件。`_custom=true` 的標籤會顯示 ✕ 刪除按鈕。預覽/下載/批量生成時，`file_stem` 映射為 `"__blank__"`（不匹配任何實際圖片，使用缺圖預設）
 
 ### `static/js/preview.js`
 - `requestPreview()` → 以目前選取角色呼叫 `/api/preview`，更新右側預覽圖
@@ -172,7 +174,7 @@ roster-reciter/
 | 2 | 資源 | 背景圖、全局缺圖、個別玩家缺圖 |
 | 3 | 版面 | 畫布尺寸、背景色、標題文字樣式（含字型掃描）、重設版面 |
 | 4 | 圖片框 | **名字文字樣式（全局可收合，含字型掃描）**、**入職日樣式（全局可收合，含 W/H）**、等比例鎖定、同步角色框、同步頭像/名字/入職日框、各玩家 accordion（含頭像/名字/入職日 toggle） |
-| 5 | 生成 | 角色標籤列表（含單一 ⬇ 下載）、批量生成 ZIP |
+| 5 | 生成 | 角色標籤列表（含單一 ⬇ 下載）、**+ 新增角色（全缺圖）**、批量生成 ZIP |
 
 ---
 
@@ -203,3 +205,4 @@ roster-reciter/
 12. **跨伺服器比對**：HR Dossier 模式下，`get_image_path` 會用 `_char_aliases` 掃描目標資料夾，支援繁中/簡中/英文跨伺服器自動對應。`preview_slide` 和 `generate_all` 端點已正確傳入 `namemap_mode/lang`。
 13. **入職日框**：W/H 為全局設定（`date_width/date_height`），個人只設 X/Y + 日期文字。`date_style.color` 作為「入職日」標籤底色，文字顏色自動白/黑。
 14. **全局設定區收合**：Step 4 的名字/入職日全局設定使用 `<details>/<summary>` 原生收合，預設收合。
+15. **自訂角色**：`_custom=true` 的角色在預覽/下載/批量生成時，`file_stem` 一律映射為 `"__blank__"`（不匹配任何實際圖片，使用缺圖預設）。批量生成輸出檔名使用 `display_name`（非 `file_stem`）

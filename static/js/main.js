@@ -29,6 +29,7 @@ const dom = {
   bgStatus:        $("bg-status"),
   uploadDefault:   $("upload-default"),
   defaultStatus:   $("default-status"),
+  btnClearDefault: $("btn-clear-default"),
   uploadNamemap:   $("upload-namemap"),
   namemapStatus:   $("namemap-status"),
   namemapLangRow:  $("namemap-lang-row"),
@@ -69,6 +70,7 @@ const dom = {
   characterList:   $("character-list"),
   btnPreview:      $("btn-preview"),
   btnGenerate:     $("btn-generate"),
+  btnAddChar:      $("btn-add-char"),
   generateStatus:  $("generate-status"),
 
   previewImg:      $("preview-img"),
@@ -222,6 +224,7 @@ function renderPlayerDefaultList(count) {
       <span class="player-label" style="width:52px;flex-shrink:0;font-size:12px;color:var(--text-muted)">玩家 ${i + 1}</span>
       <input type="file" accept="image/*" class="player-default-upload" data-i="${i}" style="font-size:12px;flex:1" />
       <span class="player-default-status status-inline" data-i="${i}"></span>
+      <button class="btn-secondary player-default-clear" data-i="${i}" style="padding:2px 6px;font-size:10px;flex-shrink:0">✕</button>
     `;
     container.appendChild(row);
   }
@@ -244,6 +247,20 @@ function renderPlayerDefaultList(count) {
         statusEl.textContent = "✗";
         statusEl.className = "player-default-status status-inline err";
       }
+    });
+  });
+
+  container.querySelectorAll(".player-default-clear").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const i = btn.dataset.i;
+      await fetch(`/api/upload/default_image/${i}/clear`, { method: "POST" });
+      const statusEl = container.querySelector(`.player-default-status[data-i="${i}"]`);
+      if (statusEl) {
+        statusEl.textContent = "已清除";
+        statusEl.className = "player-default-status status-inline ok";
+      }
+      const uploadEl = container.querySelector(`.player-default-upload[data-i="${i}"]`);
+      if (uploadEl) uploadEl.value = "";
     });
   });
 }
@@ -336,6 +353,18 @@ function bindEvents() {
   dom.uploadDefault.addEventListener("change", () =>
     uploadFile(dom.uploadDefault, "/api/upload/default_image", dom.defaultStatus)
   );
+
+  // 清除全局缺圖預設
+  dom.btnClearDefault.addEventListener("click", async () => {
+    await fetch("/api/upload/default_image/clear", { method: "POST" });
+    dom.uploadDefault.value = "";
+    setStatus(dom.defaultStatus, "已清除", "ok");
+    if (state.characters.length > 0 && state.selectedCharIndex >= 0) {
+      previewMgr.requestPreview();
+    } else {
+      previewMgr.requestBlankPreview();
+    }
+  });
   // namemap 比對模式切換 → 顯示/隱藏語言選擇，同步 layout，有掃描結果則重新掃描
   document.querySelectorAll("input[name='namemap-mode']").forEach((radio) => {
     radio.addEventListener("change", () => {
@@ -554,6 +583,27 @@ function bindEvents() {
   });
 
   dom.btnGenerate.addEventListener("click", generateAll);
+
+  // 新增角色（全缺圖）
+  dom.btnAddChar.addEventListener("click", () => {
+    const name = prompt("輸入角色名稱：");
+    if (!name || !name.trim()) return;
+    const trimmed = name.trim();
+    // 檢查是否已存在
+    if (state.characters.some(c => c.display_name === trimmed)) {
+      alert("該角色已存在");
+      return;
+    }
+    state.characters.push({
+      file_stem: `__custom__${state.characters.length}`,
+      display_name: trimmed,
+      _custom: true
+    });
+    state.selectedCharIndex = state.characters.length - 1;
+    dom.charListHint.style.display = "none";
+    renderCharacterList();
+    previewMgr.requestPreview();
+  });
 }
 
 // ── 儲存後重新掃描（mode/lang/namemap 變更時呼叫）──
@@ -644,6 +694,27 @@ function renderCharacterList() {
 
     tag.appendChild(label);
     tag.appendChild(dlBtn);
+
+    // 自訂角色顯示刪除按鈕
+    if (char._custom) {
+      const delBtn = document.createElement("span");
+      delBtn.className = "char-tag-dl";
+      delBtn.title = `刪除 ${char.display_name}`;
+      delBtn.textContent = "✕";
+      delBtn.style.color = "var(--danger)";
+      delBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        state.characters.splice(i, 1);
+        if (state.selectedCharIndex >= state.characters.length) {
+          state.selectedCharIndex = state.characters.length - 1;
+        }
+        renderCharacterList();
+        if (state.selectedCharIndex >= 0) {
+          previewMgr.requestPreview();
+        }
+      });
+      tag.appendChild(delBtn);
+    }
     dom.characterList.appendChild(tag);
   });
   // toolbar 角色切換下拉
@@ -709,13 +780,14 @@ async function _downloadSingle(char) {
   }
   await immediateSaveLayout();
   try {
+    const file_stem = char._custom ? "__blank__" : char.file_stem;
     const res = await fetch("/api/preview", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         base_dir: state.baseDir,
         player_folders: state.playerFolders,
-        file_stem: char.file_stem,
+        file_stem: file_stem,
         display_name: char.display_name,
       }),
     });
@@ -755,7 +827,10 @@ async function generateAll() {
       body: JSON.stringify({
         base_dir: state.baseDir,
         player_folders: state.playerFolders,
-        characters: state.characters,
+        characters: state.characters.map(c => ({
+          file_stem: c._custom ? "__blank__" : c.file_stem,
+          display_name: c.display_name,
+        })),
       }),
     });
 
@@ -873,11 +948,9 @@ async function loadUploadsStatus() {
       setStatus(dom.bgStatus, "✓ 已上傳", "ok");
     }
 
-    // 全局缺圖：顯示縮圖（小圖，換行）
+    // 全局缺圖：只顯示文字狀態
     if (data.default_image) {
-      setStatus(dom.defaultStatus,
-        `✓ 已上傳<br><img src="/static/uploads/default_image.png?t=${ts}"
-              style="height:48px;border-radius:3px;margin-top:4px;display:block">`, "ok");
+      setStatus(dom.defaultStatus, "✓ 已上傳", "ok");
     }
 
     // 名稱對照表：顯示筆數，並還原 mode/lang radio
@@ -891,15 +964,13 @@ async function loadUploadsStatus() {
       if (langEl) langEl.checked = true;
     }
 
-    // 個別玩家缺圖預設：顯示縮圖
+    // 個別玩家缺圖預設：只顯示文字狀態
     const container = document.getElementById("player-default-list");
     if (container && data.player_defaults) {
       data.player_defaults.forEach((exists, i) => {
         const el = container.querySelector(`.player-default-status[data-i="${i}"]`);
         if (el && exists) {
-          el.innerHTML =
-            `<img src="/static/uploads/default_${i}.png?t=${ts}"
-                  style="height:28px;vertical-align:middle;border-radius:2px"> ✓`;
+          el.textContent = "✓ 已上傳";
           el.className = "player-default-status status-inline ok";
         }
       });

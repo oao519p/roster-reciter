@@ -41,13 +41,15 @@ export class PreviewManager {
     if (!char) return;
 
     try {
+      // 自訂角色（全缺圖）傳 __blank__ 讓後端全部用缺圖預設
+      const file_stem = char._custom ? "__blank__" : char.file_stem;
       const res = await fetch("/api/preview", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           base_dir: state.baseDir,
           player_folders: state.playerFolders,
-          file_stem: char.file_stem,
+          file_stem: file_stem,
           display_name: char.display_name,
         }),
       });

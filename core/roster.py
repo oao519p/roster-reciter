@@ -103,18 +103,22 @@ class RosterManager:
         if not self.player_folders:
             return []
 
-        ref_folder = self.base_dir / self.player_folders[0]
-        if not ref_folder.exists():
-            raise FileNotFoundError(f"參考資料夾不存在：{ref_folder}")
-
-        characters = []
-        for f in sorted(ref_folder.iterdir()):
-            if f.suffix.lower() in self.SUPPORTED_EXTENSIONS:
+        # 掃描所有玩家資料夾，用 display_name 去重
+        seen: dict[str, Character] = {}  # display_name → Character（保留第一次出現的 file_stem）
+        for pi, folder_name in enumerate(self.player_folders):
+            folder = self.base_dir / folder_name
+            if not folder.exists():
+                continue
+            for f in sorted(folder.iterdir()):
+                if f.suffix.lower() not in self.SUPPORTED_EXTENSIONS:
+                    continue
                 stem = f.stem
                 display = self._resolve_display(stem)
-                characters.append(Character(file_stem=stem, display_name=display))
+                # 用 display_name 去重，保留第一個找到的 file_stem
+                if display not in seen:
+                    seen[display] = Character(file_stem=stem, display_name=display)
 
-        return characters
+        return list(seen.values())
 
     def get_image_path(self, player_index: int, file_stem: str):
         folder = self.base_dir / self.player_folders[player_index]

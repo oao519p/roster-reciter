@@ -103,11 +103,13 @@
           <label>缺圖預設圖片（全局）</label>
           <div class="upload-row">
             <input type="file" id="upload-default" accept="image/*" />
+            <button class="btn-secondary" id="btn-clear-default" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>
             <span id="default-status" class="status-inline"></span>
           </div>
 
           <label>缺圖預設圖片（個別玩家，優先於全局）</label>
           <div id="player-default-list" class="hint">請先套用玩家數量後顯示</div>
+          <div id="player-default-clears"></div>
 
         </section>
 
@@ -248,7 +250,10 @@
           <h2><span class="step-badge">5</span> 生成輸出</h2>
           <p class="hint" id="char-list-hint">請先完成步驟 1 掃描角色。</p>
           <div id="character-list"></div>
-          <div class="row-inline" style="margin-top:12px">
+          <div class="row-inline" style="margin-top:8px">
+            <button class="btn-secondary" id="btn-add-char" style="flex:1;font-size:12px">+ 新增角色（全缺圖）</button>
+          </div>
+          <div class="row-inline" style="margin-top:4px">
             <button class="btn-primary" id="btn-generate">⬇ 批量生成 ZIP</button>
           </div>
           <div id="generate-status" class="status-msg"></div>

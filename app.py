@@ -449,6 +449,32 @@ def upload_default_image():
     return jsonify({"ok": True})
 
 
+@app.route("/api/upload/default_image/clear", methods=["POST"])
+def clear_default_image():
+    p = UPLOAD_DIR / "default_image.png"
+    if p.exists():
+        p.unlink()
+    layout = _load_layout()
+    layout.default_image_path = ""
+    _save_layout(layout)
+    return jsonify({"ok": True})
+
+
+@app.route("/api/upload/default_image/<int:player_index>/clear", methods=["POST"])
+def clear_player_default_image(player_index: int):
+    if player_index < 0 or player_index >= 20:
+        return jsonify({"ok": False, "error": "玩家索引超出範圍"}), 400
+    p = UPLOAD_DIR / f"default_{player_index}.png"
+    if p.exists():
+        p.unlink()
+    layout = _load_layout()
+    while len(layout.player_default_paths) <= player_index:
+        layout.player_default_paths.append("")
+    layout.player_default_paths[player_index] = ""
+    _save_layout(layout)
+    return jsonify({"ok": True})
+
+
 @app.route("/api/upload/default_image/<int:player_index>", methods=["POST"])
 def upload_player_default_image(player_index: int):
     """上傳指定玩家的缺圖預設圖片（0-based）"""
@@ -605,7 +631,7 @@ def generate_all():
         file_stem = char.get("file_stem", "")
         display_name = char.get("display_name", file_stem)
         image_paths = [manager.get_image_path(i, file_stem) for i in range(len(player_folders))]
-        out_path = OUTPUT_DIR / f"{file_stem}.png"
+        out_path = OUTPUT_DIR / f"{display_name}.png"
         try:
             compose_slide(
                 layout=layout,
