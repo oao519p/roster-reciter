@@ -340,26 +340,37 @@ def save_layout():
         return jsonify({"ok": False, "error": str(e)}), 400
 
 
+@app.route("/api/layout/reslot", methods=["POST"])
+def reslot_layout():
+    """只修改角色框寬高，保留所有其他設定（title、canvas、樣式等）"""
+    slot_mode = (request.json or {}).get("slot_mode", "formation")
+    layout = _load_layout()
+    layout.reslot(slot_mode)
+    _save_layout(layout)
+    return jsonify(layout.to_dict())
+
+
 @app.route("/api/layout/default", methods=["POST"])
 def reset_layout():
     player_count = int((request.json or {}).get("player_count", 1))
     player_count = max(1, min(20, player_count))
+    slot_mode = (request.json or {}).get("slot_mode", "formation")
 
     # 步驟 1：從 default_layout.json 讀取原廠 canvas / title 樣式
     #         不存在時用程式碼預設並初次建立
     if DEFAULT_LAYOUT_PATH.exists():
         base = Layout.load(DEFAULT_LAYOUT_PATH)
     else:
-        base = Layout.make_default(player_count=player_count)
+        base = Layout.make_default(player_count=player_count, slot_mode=slot_mode)
         base.save(DEFAULT_LAYOUT_PATH)
 
     # 步驟 2：用前端傳入的 player_count 重新產生 image_slots，
     #         但套用 default 的 canvas / title 樣式
-    new_layout = Layout.make_default(player_count=player_count)
+    new_layout = Layout.make_default(player_count=player_count, slot_mode=slot_mode)
     new_layout.canvas = base.canvas
     new_layout.title  = base.title
 
-    # 步驟 3：保留目前的工作環境欄位，不被 default 覆蓋
+    # 步驟 3：保留目前的工作環境欄位與使用者自訂樣式，不被 default 覆蓋
     if CURRENT_LAYOUT_PATH.exists():
         try:
             current = Layout.load(CURRENT_LAYOUT_PATH)
@@ -373,6 +384,12 @@ def reset_layout():
             new_layout.namemap_path        = current.namemap_path
             new_layout.namemap_mode        = current.namemap_mode
             new_layout.namemap_lang        = current.namemap_lang
+            new_layout.slot_mode           = slot_mode
+            # 保留使用者自訂的 Step 3/4 樣式設定
+            new_layout.label_style         = current.label_style
+            new_layout.date_style          = current.date_style
+            new_layout.date_width          = current.date_width
+            new_layout.date_height         = current.date_height
         except Exception:
             pass
 

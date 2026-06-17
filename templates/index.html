@@ -79,6 +79,17 @@
             <label style="margin-right:10px;font-size:13px"><input type="radio" name="namemap-lang" value="en" style="width:auto;margin-right:4px" />英文</label>
             <label style="font-size:13px;display:none"><input type="radio" name="namemap-lang" value="jp" style="width:auto;margin-right:4px" />日文</label>
           </div>
+          <div id="slot-mode-row" style="display:none;margin-bottom:6px">
+            <label class="hint" style="display:block;margin-bottom:4px">角色框預設比例</label>
+            <label style="margin-right:12px;font-size:13px">
+              <input type="radio" name="slot-mode" value="formation" checked style="width:auto;margin-right:4px" />
+              編隊模式（180×375）
+            </label>
+            <label style="font-size:13px">
+              <input type="radio" name="slot-mode" value="card" style="width:auto;margin-right:4px" />
+              卡片模式（180×360）
+            </label>
+          </div>
           <div class="upload-row">
             <input type="file" id="upload-namemap" accept=".json" />
             <button class="btn-secondary" id="btn-clear-namemap" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>

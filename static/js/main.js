@@ -33,6 +33,7 @@ const dom = {
   uploadNamemap:   $("upload-namemap"),
   namemapStatus:   $("namemap-status"),
   namemapLangRow:  $("namemap-lang-row"),
+  slotModeRow:     $("slot-mode-row"),
   btnClearNamemap: $("btn-clear-namemap"),
 
   canvasW:         $("canvas-w"),
@@ -299,10 +300,11 @@ function bindEvents() {
     dom.playerCount.value = n;
     renderPlayerFolderInputs();
     // 自動重設版面，讓 image_slots 立即產生
+    const slotMode = document.querySelector("input[name='slot-mode']:checked")?.value || "formation";
     const res = await fetch("/api/layout/default", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ player_count: n }),
+      body: JSON.stringify({ player_count: n, slot_mode: slotMode }),
     });
     state.layout = await res.json();
     syncLayoutToForm();
@@ -365,10 +367,12 @@ function bindEvents() {
       previewMgr.requestBlankPreview();
     }
   });
-  // namemap 比對模式切換 → 顯示/隱藏語言選擇，同步 layout，有掃描結果則重新掃描
+  // namemap 比對模式切換 → 顯示/隱藏語言選擇與角色框比例，同步 layout，有掃描結果則重新掃描
   document.querySelectorAll("input[name='namemap-mode']").forEach((radio) => {
     radio.addEventListener("change", () => {
-      dom.namemapLangRow.style.display = radio.value === "hr_dossier" ? "" : "none";
+      const isHr = radio.value === "hr_dossier";
+      dom.namemapLangRow.style.display = isHr ? "" : "none";
+      dom.slotModeRow.style.display = isHr ? "" : "none";
       if (state.layout) state.layout.namemap_mode = radio.value;
       _saveAndRescan();
     });
@@ -379,6 +383,22 @@ function bindEvents() {
     radio.addEventListener("change", () => {
       if (state.layout) state.layout.namemap_lang = radio.value;
       _saveAndRescan();
+    });
+  });
+
+  // 角色框比例切換 → 只修改 slot W/H，保留所有其他設定
+  document.querySelectorAll("input[name='slot-mode']").forEach((radio) => {
+    radio.addEventListener("change", async () => {
+      if (state.layout) state.layout.slot_mode = radio.value;
+      await immediateSaveLayout();
+      const res = await fetch("/api/layout/reslot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slot_mode: radio.value }),
+      });
+      state.layout = await res.json();
+      layoutEditor.renderSlotInputs();
+      previewMgr.requestBlankPreview();
     });
   });
 
@@ -428,6 +448,7 @@ function bindEvents() {
     const normalRadio = document.querySelector("input[name='namemap-mode'][value='normal']");
     if (normalRadio) normalRadio.checked = true;
     dom.namemapLangRow.style.display = "none";
+    dom.slotModeRow.style.display = "none";
     if (state.characters.length > 0 && state.baseDir) {
       await scanCharacters();
     }
@@ -504,10 +525,11 @@ function bindEvents() {
 
   // step3 內的「重設為原廠版面」：只重設 canvas/title/image_slots，保留工作環境
   dom.btnResetLayout.addEventListener("click", async () => {
+    const slotMode = document.querySelector("input[name='slot-mode']:checked")?.value || "formation";
     const res = await fetch("/api/layout/default", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ player_count: state.playerCount }),
+      body: JSON.stringify({ player_count: state.playerCount, slot_mode: slotMode }),
     });
     state.layout = await res.json();
     syncLayoutToForm();
@@ -958,10 +980,14 @@ async function loadUploadsStatus() {
       setStatus(dom.namemapStatus, `✓ 已載入 ${data.namemap_count} 筆`, "ok");
       const mode = state.layout?.namemap_mode || "normal";
       const lang = state.layout?.namemap_lang || "tw";
+      const slotMode = state.layout?.slot_mode || "formation";
       const modeEl = document.querySelector(`input[name='namemap-mode'][value='${mode}']`);
-      if (modeEl) { modeEl.checked = true; dom.namemapLangRow.style.display = mode === "hr_dossier" ? "" : "none"; }
+      const isHr = mode === "hr_dossier";
+      if (modeEl) { modeEl.checked = true; dom.namemapLangRow.style.display = isHr ? "" : "none"; dom.slotModeRow.style.display = isHr ? "" : "none"; }
       const langEl = document.querySelector(`input[name='namemap-lang'][value='${lang}']`);
       if (langEl) langEl.checked = true;
+      const slotModeEl = document.querySelector(`input[name='slot-mode'][value='${slotMode}']`);
+      if (slotModeEl) slotModeEl.checked = true;
     }
 
     // 個別玩家缺圖預設：只顯示文字狀態

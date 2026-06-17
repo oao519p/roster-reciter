@@ -96,6 +96,7 @@ class Layout:
     namemap_path: str = ""         # 名稱對照表（json）
     namemap_mode: str = "normal"   # "normal" | "hr_dossier"
     namemap_lang: str = "tw"       # "tw" | "cn" | "en" | "jp"
+    slot_mode: str = "formation"   # "formation" (180x375) | "card" (180x360)
     label_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#FFFFFF", align="center"))
     date_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#1a1a2e", align="left"))
     date_width: int = 260   # 入職日框全局寬度
@@ -150,6 +151,7 @@ class Layout:
             namemap_path=data.get("namemap_path", ""),
             namemap_mode=data.get("namemap_mode", "normal"),
             namemap_lang=data.get("namemap_lang", "tw"),
+            slot_mode=data.get("slot_mode", "formation"),
             label_style=TextStyle(**data["label_style"]) if data.get("label_style") else TextStyle(font_size=24, color="#FFFFFF", align="center"),
             date_style=TextStyle(**data["date_style"]) if data.get("date_style") else TextStyle(font_size=24, color="#1a1a2e", align="left"),
             date_width=data.get("date_width", 260),
@@ -167,16 +169,33 @@ class Layout:
         data = json.loads(Path(path).read_text(encoding="utf-8"))
         return cls.from_dict(data)
 
+    def reslot(self, slot_mode: str) -> None:
+        """只修改角色框寬高（W/H），X/Y 位置完全不變。"""
+        if slot_mode == "card":
+            slot_w, slot_h = 180, 360
+        else:
+            slot_w, slot_h = 180, 375
+
+        for slot in self.image_slots:
+            slot.width = slot_w
+            slot.height = slot_h
+            slot.label.width = slot_w
+
+        self.slot_mode = slot_mode
+
     @classmethod
-    def make_default(cls, player_count: int = 1) -> "Layout":
+    def make_default(cls, player_count: int = 1, slot_mode: str = "formation") -> "Layout":
         canvas = CanvasConfig(width=1920, height=1080)
         title = TitleBox(
             x=50, y=20, width=1820, height=100,
             style=TextStyle(font_size=72, color="#FFFFFF", align="center")
         )
 
-        slot_w = 200
-        slot_h = 400
+        # 根據 slot_mode 決定預設角色框大小
+        if slot_mode == "card":
+            slot_w, slot_h = 180, 360
+        else:
+            slot_w, slot_h = 180, 375
         gap = 20
         total_w = slot_w * player_count + gap * (player_count - 1)
         start_x = (canvas.width - total_w) // 2
@@ -227,6 +246,7 @@ class Layout:
             namemap_path="",
             namemap_mode="normal",
             namemap_lang="tw",
+            slot_mode=slot_mode,
             label_style=TextStyle(font_size=24, color="#FFFFFF", align="center"),
             date_style=TextStyle(font_size=24, color="#1a1a2e", align="left"),
             date_width=260,

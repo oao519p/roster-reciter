@@ -75,6 +75,7 @@ roster-reciter/
 | GET | `/api/layout` | 取得目前版面設定 |
 | POST | `/api/layout` | 儲存版面設定 |
 | POST | `/api/layout/default` | 重設為預設版面（保留所有資源路徑與 namemap 設定） |
+| POST | `/api/layout/reslot` | 只修改角色框 W/H（保留 title/canvas/樣式等所有其他設定） |
 | POST | `/api/scan` | 掃描角色圖片清單 |
 | POST | `/api/preview` | 預覽單張投影片（回傳 PNG，也供單一下載使用） |
 | POST | `/api/generate` | 批量生成並下載 ZIP |
@@ -99,7 +100,7 @@ roster-reciter/
 版面資料結構，全部使用 Python `dataclass`：
 - `Layout` → `CanvasConfig` + `TitleBox` + `list[ImageSlot]` + 工作環境欄位 + 資源路徑欄位
 - 工作環境欄位：`remember`（bool）、`base_dir`、`player_folders`、`player_count`
-- 資源路徑欄位：`background_path`、`default_image_path`、`player_default_paths`、`namemap_path`、`namemap_mode`、`namemap_lang`
+- 資源路徑欄位：`background_path`、`default_image_path`、`player_default_paths`、`namemap_path`、`namemap_mode`、`namemap_lang`、**`slot_mode`**
 - **`label_style: TextStyle`** — 全局名字文字樣式（所有玩家共用，不 per-slot）
 - **`date_style: TextStyle`** — 全局入職日樣式（`color` 作為標籤底色，文字自動白/黑）
 - **`date_width: int` / `date_height: int`** — 入職日框全局尺寸
@@ -108,7 +109,7 @@ roster-reciter/
   - `LabelBox`（名字，只存位置/大小/文字/背景色，字型由 `label_style` 統一）
   - `DateBox`（入職日，只存 `enabled`/`x`/`y`/`date_text`，W/H 由全局設定）
 - `Layout.save()` / `Layout.load()` 讀寫 JSON
-- `Layout.make_default(player_count)` 產生預設版面
+- `Layout.make_default(player_count, slot_mode)` 產生預設版面，`slot_mode` 決定角色框預設大小：`formation`（180×375）或 `card`（180×360）
 - **向下相容**：舊 `layout.json` 的 `avatar.size` 自動轉換為 `width=height=size`
 
 ### `core/roster.py`
@@ -170,7 +171,7 @@ roster-reciter/
 
 | Step | 面板 | 主要內容 |
 |------|------|---------|
-| 1 | 資料夾 | base_dir、玩家數量、玩家資料夾、**namemap 設定（模式/語言/上傳/清除）**、掃描按鈕 |
+| 1 | 資料夾 | base_dir、玩家數量、玩家資料夾、**namemap 設定（模式/語言/上傳/清除）**、**角色框比例（僅 HR Dossier 顯示）**、掃描按鈕 |
 | 2 | 資源 | 背景圖、全局缺圖、個別玩家缺圖 |
 | 3 | 版面 | 畫布尺寸、背景色、標題文字樣式（含字型掃描）、重設版面 |
 | 4 | 圖片框 | **名字文字樣式（全局可收合，含字型掃描）**、**入職日樣式（全局可收合，含 W/H）**、等比例鎖定、同步角色框、同步頭像/名字/入職日框、各玩家 accordion（含頭像/名字/入職日 toggle） |
@@ -206,3 +207,4 @@ roster-reciter/
 13. **入職日框**：W/H 為全局設定（`date_width/date_height`），個人只設 X/Y + 日期文字。`date_style.color` 作為「入職日」標籤底色，文字顏色自動白/黑。
 14. **全局設定區收合**：Step 4 的名字/入職日全局設定使用 `<details>/<summary>` 原生收合，預設收合。
 15. **自訂角色**：`_custom=true` 的角色在預覽/下載/批量生成時，`file_stem` 一律映射為 `"__blank__"`（不匹配任何實際圖片，使用缺圖預設）。批量生成輸出檔名使用 `display_name`（非 `file_stem`）
+16. **角色框比例**：切換比例呼叫 `/api/layout/reslot`，只修改 slot W/H 與 label.width，X/Y 位置完全不變。一般模式不顯示比例選擇器，HR Dossier 模式下預設為編隊模式（180×375）
