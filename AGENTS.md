@@ -131,8 +131,19 @@ roster-reciter/
 - 字型快取於 `_font_cache`，避免重複載入
 
 ### `tools/build_namemap.py`
-- 從兩份 `operator_data_*.json`（TW/CN 伺服器）產生 `config/namemap.json`
-- 輸出格式：`{charId: {tw, cn, en}}`，供 HR Dossier 模式使用
+- 從 ArknightsGameResource 的 `character_table.json`（GitHub raw）更新 `config/namemap.json`
+- 過濾 `char_` 開頭的角色，排除 29 個預備/盟約幹員（`EXCLUDE_KEYS`）
+- 比對現有 namemap.json，只新增缺少的角色
+- 自動填入 `cn`（name）和 `en`（appellation），`tw` 留空
+- 使用方式：`python tools/build_namemap.py`（互動式）
+- 流程：檢查 commit sha → 下載 → 比對 → 顯示新增/缺少 tw → 詢問是否寫入 → 逐一詢問每個缺少 tw 的角色（[1] 自動轉換 / [2] 手動輸入）
+- 使用 `opencc-python-reimplemented` 進行簡繁轉換（s2t）
+- commit sha 記錄在 `tools/namemap_meta.json`（不影響 namemap.json 結構）
+- GitHub API 使用 `?path=gamedata/excel/character_table.json` 精確查詢該檔案的 commit
+- 如果 commit sha 未變，提示「已是最新」並詢問是否強制更新
+- GitHub API rate limit（403）時自動跳過 commit 檢查並繼續執行
+- 寫入時按 key 字母排序（`sort_keys=True`）
+- Windows console 支援 UTF-8（`sys.stdout.reconfigure`）
 
 ---
 

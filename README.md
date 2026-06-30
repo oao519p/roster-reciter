@@ -26,13 +26,30 @@ python app.py
 
 ## 工具
 
-### `tools/build_namemap.py` — 產生 namemap.json
+### `tools/build_namemap.py` — 更新 namemap.json
 
-從兩份 `operator_data_*.json`（TW/CN 伺服器）產生 `config/namemap.json`。
+從 ArknightsGameResource 的 `character_table.json` 更新 `config/namemap.json`。
 
 ```bash
 python tools/build_namemap.py
 ```
+
+**互動流程：**
+1. 檢查 GitHub commit sha（判斷 character_table.json 是否有更新）
+2. 下載並比對 character_table.json 與 namemap.json
+3. 顯示新增角色和缺少 tw 的角色
+4. 詢問是否寫入 namemap.json
+5. 對每個缺少 tw 的角色逐一詢問：
+   - `[1]` 自動轉換（使用 opencc 簡轉繁，顯示結果供確認）
+   - `[2]` 手動輸入
+6. 寫入 namemap.json 並記錄 commit sha（`tools/namemap_meta.json`）
+
+**注意事項：**
+- 使用 `opencc-python-reimplemented` 進行簡繁轉換
+- commit sha 記錄在 `tools/namemap_meta.json`，不會影響 namemap.json 的結構
+- 如果 commit sha 未變，會提示「已是最新」並詢問是否強制更新
+- GitHub API rate limit 時自動跳過 commit 檢查並繼續執行
+- 寫入時按 key 字母排序（`sort_keys=True`）
 
 ### `tools/sort_output.py` — 根據 PRRTS Wiki 排序輸出圖片
 
@@ -165,7 +182,8 @@ roster-reciter/
 ├── app.py                    # Flask 主程式，所有 API 路由
 ├── requirements.txt          # Flask + Pillow
 ├── tools/
-│   ├── build_namemap.py      # 從 operator_data JSON 產生 namemap.json
+│   ├── build_namemap.py      # 從 character_table.json 更新 namemap.json
+│   ├── namemap_meta.json     # commit sha 記錄（自動產生）
 │   └── sort_output.py        # 根據 PRRTS Wiki 排序輸出圖片
 ├── config/
 │   ├── default_layout.json   # 出廠預設版面（重設時讀取）
