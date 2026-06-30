@@ -56,5 +56,5 @@
   "background_path": "",
   "default_image_path": "",
   "player_default_paths": [],
-  "namemap_path": ""
+  "namemap_path": "static/uploads/namemap.json"
 }

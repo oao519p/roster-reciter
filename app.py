@@ -12,6 +12,7 @@ from pathlib import Path
 
 from flask import Flask, render_template, request, jsonify, send_file
 from PIL import Image
+import requests
 
 from core.layout import Layout
 from core.roster import RosterManager
@@ -137,13 +138,18 @@ def uploads_status():
         except Exception:
             pass
 
+    bg_path = UPLOAD_DIR / "background.png"
+    def_path = UPLOAD_DIR / "default_image.png"
+
     return jsonify({
         "ok": True,
-        "background":      (UPLOAD_DIR / "background.png").exists(),
-        "default_image":   (UPLOAD_DIR / "default_image.png").exists(),
-        "namemap_count":   namemap_count,
-        "player_defaults": [(UPLOAD_DIR / f"default_{i}.png").exists() for i in range(player_count)],
-        "avatars":         [(UPLOAD_DIR / f"avatar_{i}.png").exists() for i in range(player_count)],
+        "background":        bg_path.exists(),
+        "background_name":   bg_path.name if bg_path.exists() else "",
+        "default_image":     def_path.exists(),
+        "default_image_name": def_path.name if def_path.exists() else "",
+        "namemap_count":     namemap_count,
+        "player_defaults":   [(UPLOAD_DIR / f"default_{i}.png").exists() for i in range(player_count)],
+        "avatars":           [(UPLOAD_DIR / f"avatar_{i}.png").exists() for i in range(player_count)],
     })
 
 
@@ -616,6 +622,216 @@ def preview_slide():
         return jsonify({"ok": False, "error": str(e)}), 500
 
 
+# ── 圖片排序 ──────────────────────────────────
+def _sort_output_images(namemap_path: Path) -> list[tuple[str, str]]:
+    """根據 PRRTS Wiki 角色排序重新命名 output/ 中的圖片
+    
+    返回: [(原檔名, 新檔名), ...]
+    """
+    import re as _re
+    
+    # 爬取 PRRTS Wiki
+    try:
+        resp = requests.get("https://prts.wiki/w/干员一览", timeout=30)
+        resp.encoding = "utf-8"
+    except Exception:
+        return []
+    
+    pattern = r'data-zh="([^"]+)"[^>]*data-en="([^"]*)"[^>]*data-ja="([^"]*)"[^>]*data-sortid="([^"]*)"'
+    matches = _re.findall(pattern, resp.text)
+    
+    operators = []
+    for zh, en, ja, sortid in matches:
+        operators.append({
+            "cn": zh,
+            "en": en,
+            "ja": ja,
+            "sortid": int(sortid) if sortid else 0,
+        })
+    
+    # 根據 sortid 升序排序（最早的在前）
+    operators.sort(key=lambda x: x["sortid"])
+    
+    # 載入 namemap
+    try:
+        with open(namemap_path, "r", encoding="utf-8") as f:
+            namemap = json.load(f)
+    except Exception:
+        namemap = {}
+    
+    # 建立名稱到排序的對照
+    cn_to_order = {}
+    for idx, op in enumerate(operators):
+        cn_to_order[op["cn"]] = idx
+    
+    cn_to_charid = {}
+    for char_id, names in namemap.items():
+        if "cn" in names:
+            cn_to_charid[names["cn"]] = char_id
+    
+    name_to_order = {}
+    
+    # 加入 namemap 中的所有名稱
+    for char_id, names in namemap.items():
+        cn_name = names.get("cn", "")
+        if cn_name in cn_to_order:
+            order = cn_to_order[cn_name]
+            for lang in ["tw", "cn", "en", "jp"]:
+                if lang in names:
+                    name_to_order[names[lang]] = order
+    
+    # 對於 namemap 中沒有的角色，直接使用 PRRTS 的數據
+    for op in operators:
+        cn_name = op["cn"]
+        if cn_name not in cn_to_charid:
+            order = cn_to_order[cn_name]
+            name_to_order[cn_name] = order
+            if op["en"]:
+                name_to_order[op["en"]] = order
+            if op["ja"]:
+                name_to_order[op["ja"]] = order
+    
+    # 掃描 output/ 中的圖片
+    image_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}
+    images = [f for f in OUTPUT_DIR.iterdir() if f.suffix.lower() in image_extensions]
+    
+    if not images:
+        return []
+    
+    # 匹配並重新命名
+    results = []
+    for img_path in images:
+        name = img_path.stem
+        if name in name_to_order:
+            order = name_to_order[name]
+            new_name = f"{order + 1:03d}_{name}{img_path.suffix}"
+            new_path = OUTPUT_DIR / new_name
+            if img_path.exists():
+                img_path.rename(new_path)
+                results.append((name, new_name))
+    
+    return results
+
+
+@app.route("/api/sort", methods=["POST"])
+def sort_images():
+    """排序 output/ 中的圖片（根據 PRRTS Wiki 角色排序）"""
+    namemap_path = UPLOAD_DIR / "namemap.json"
+    if not namemap_path.exists():
+        namemap_path = CONFIG_DIR / "namemap.json"
+    
+    if not namemap_path.exists():
+        return jsonify({"ok": False, "error": "未找到 namemap.json"}), 400
+    
+    results = _sort_output_images(namemap_path)
+    
+    return jsonify({
+        "ok": True,
+        "sorted": len(results),
+        "results": results,
+    })
+
+
+@app.route("/api/sort/preview", methods=["POST"])
+def sort_images_preview():
+    """預覽排序結果（不實際重命名）"""
+    namemap_path = UPLOAD_DIR / "namemap.json"
+    if not namemap_path.exists():
+        namemap_path = CONFIG_DIR / "namemap.json"
+    
+    if not namemap_path.exists():
+        return jsonify({"ok": False, "error": "未找到 namemap.json"}), 400
+    
+    # 爬取 PRRTS Wiki
+    try:
+        resp = requests.get("https://prts.wiki/w/干员一览", timeout=30)
+        resp.encoding = "utf-8"
+    except Exception:
+        return jsonify({"ok": False, "error": "無法連接 PRRTS Wiki"}), 500
+    
+    import re as _re
+    pattern = r'data-zh="([^"]+)"[^>]*data-en="([^"]*)"[^>]*data-ja="([^"]*)"[^>]*data-sortid="([^"]*)"'
+    matches = _re.findall(pattern, resp.text)
+    
+    operators = []
+    for zh, en, ja, sortid in matches:
+        operators.append({
+            "cn": zh,
+            "en": en,
+            "ja": ja,
+            "sortid": int(sortid) if sortid else 0,
+        })
+    
+    operators.sort(key=lambda x: x["sortid"])
+    
+    # 載入 namemap
+    try:
+        with open(namemap_path, "r", encoding="utf-8") as f:
+            namemap = json.load(f)
+    except Exception:
+        namemap = {}
+    
+    # 建立名稱到排序的對照
+    cn_to_order = {}
+    for idx, op in enumerate(operators):
+        cn_to_order[op["cn"]] = idx
+    
+    cn_to_charid = {}
+    for char_id, names in namemap.items():
+        if "cn" in names:
+            cn_to_charid[names["cn"]] = char_id
+    
+    name_to_order = {}
+    
+    for char_id, names in namemap.items():
+        cn_name = names.get("cn", "")
+        if cn_name in cn_to_order:
+            order = cn_to_order[cn_name]
+            for lang in ["tw", "cn", "en", "jp"]:
+                if lang in names:
+                    name_to_order[names[lang]] = order
+    
+    for op in operators:
+        cn_name = op["cn"]
+        if cn_name not in cn_to_charid:
+            order = cn_to_order[cn_name]
+            name_to_order[cn_name] = order
+            if op["en"]:
+                name_to_order[op["en"]] = order
+            if op["ja"]:
+                name_to_order[op["ja"]] = order
+    
+    # 掃描 output/ 中的圖片
+    image_extensions = {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}
+    images = [f for f in OUTPUT_DIR.iterdir() if f.suffix.lower() in image_extensions]
+    
+    if not images:
+        return jsonify({"ok": False, "error": "output/ 中沒有圖片"}), 400
+    
+    # 匹配並返回預覽
+    matched = []
+    unmatched = []
+    
+    for img_path in images:
+        name = img_path.stem
+        if name in name_to_order:
+            order = name_to_order[name]
+            new_name = f"{order + 1:03d}_{name}{img_path.suffix}"
+            matched.append({"old": name, "new": new_name, "order": order})
+        else:
+            unmatched.append(name)
+    
+    matched.sort(key=lambda x: x["order"])
+    
+    return jsonify({
+        "ok": True,
+        "matched": len(matched),
+        "unmatched": len(unmatched),
+        "sorted": matched,
+        "unmatched_names": unmatched,
+    })
+
+
 # ── 批量生成 ──────────────────────────────────
 @app.route("/api/generate", methods=["POST"])
 def generate_all():
@@ -623,6 +839,7 @@ def generate_all():
     base_dir = data.get("base_dir", "")
     player_folders = data.get("player_folders", [])
     characters = data.get("characters", [])
+    sort_images = data.get("sort_images", False)
 
     if not base_dir or not player_folders or not characters:
         return jsonify({"ok": False, "error": "缺少必要參數"}), 400
@@ -660,6 +877,14 @@ def generate_all():
             )
         except Exception:
             pass
+
+    # 如果勾選了自動排序
+    if sort_images:
+        namemap_path = UPLOAD_DIR / "namemap.json"
+        if not namemap_path.exists():
+            namemap_path = CONFIG_DIR / "namemap.json"
+        if namemap_path.exists():
+            _sort_output_images(namemap_path)
 
     zip_path = BASE_DIR / "output.zip"
     with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zf:

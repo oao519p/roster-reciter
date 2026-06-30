@@ -1,5 +1,7 @@
 # RosterReciter 🎴
 
+![version](https://img.shields.io/badge/version-v0.2.0-blue)
+
 報菜名遊戲投影片生成器。
 自動將多位玩家的角色圖片合成為單張 1920×1080 PNG，供影片剪輯使用。
 
@@ -19,6 +21,40 @@ python app.py
 
 > Flask 以 `debug=True` 啟動，修改 Python 檔案後自動重載。
 > 前端 JS/CSS 修改需手動重新整理瀏覽器。
+
+---
+
+## 工具
+
+### `tools/build_namemap.py` — 產生 namemap.json
+
+從兩份 `operator_data_*.json`（TW/CN 伺服器）產生 `config/namemap.json`。
+
+```bash
+python tools/build_namemap.py
+```
+
+### `tools/sort_output.py` — 根據 PRRTS Wiki 排序輸出圖片
+
+批量生成後，可將 `output/` 中的圖片按角色實裝順序重新命名（添加 `001_`、`002_` 等前綴）。
+
+```bash
+# 預覽模式（預設，不會實際重命名）
+python tools/sort_output.py
+
+# 實際執行重命名
+python tools/sort_output.py --execute
+
+# 自訂路徑
+python tools/sort_output.py output/ --namemap config/namemap.json
+```
+
+**注意事項：**
+- 需要先完成 Step 5 批量生成，`output/` 中有圖片才能執行
+- 需要 `config/namemap.json` 存在
+- 會爬取 PRRTS Wiki（`https://prts.wiki/w/干员一览`）獲取角色排序
+- 不在 PRRTS Wiki 中的角色名稱（如自訂角色）不會被重新命名
+- 也可從網頁 Step 5 的排序勾選框觸發（透過 `/api/sort` 端點）
 
 ---
 
@@ -49,6 +85,7 @@ D:/images/
   - 切換比例會重設角色框位置/大小，但保留 Step 3/4 的樣式設定（字型、顏色等）
 - 上傳 JSON 格式的 namemap 後，切換語言或模式會**自動重新掃描**
 - **跨伺服器支援**：HR Dossier 模式下，不同伺服器的玩家資料夾可使用不同語言的角色名（如繁中 `011_琳瑯詩懷雅.png` 與簡中 `005_琳琅诗怀雅.png`），系統會自動根據 namemap 的別名對應找到正確圖片
+- **namemap 預設路徑**：`default_layout.json` 預設 `"namemap_path": "static/uploads/namemap.json"`，重設版面時保留已上傳的 namemap 設定
 
 **namemap JSON 格式：**
 ```json
@@ -64,9 +101,12 @@ D:/images/
 - **背景圖片**：所有投影片共用，上傳後自動預覽
 - **缺圖預設圖片（全局）**：某玩家缺少某角色時使用（預設顯示半透明黑色 + NO INFO 白字）
 - **缺圖預設圖片（個別玩家）**：優先於全局設定
+- **上傳狀態顯示**：每個上傳區塊顯示 `[檔案名] [狀態] [清除] [上傳]`，檔案名過長時自動截斷顯示省略號。上傳/清除後自動更新檔案名與狀態
 
 ### Step 3：版面設定
 調整畫布尺寸、背景顏色、標題文字樣式。
+
+**標題開關**：可切換標題的啟用/停用。停用時，標題設定表單與右側預覽區的標題框會同時隱藏。切換時自動觸發預覽更新。
 
 > ⚠️ **中文字型**：點「掃描」自動列出系統字型，選擇標有 ★ 的中文字型，
 > 或手動填寫路徑，例如：`C:/Windows/Fonts/msjh.ttc`
@@ -91,9 +131,30 @@ D:/images/
 - 點角色標籤選取並預覽
 - 每個角色標籤右側有 **⬇ 按鈕**可單獨下載該角色的 PNG
 - **「+ 新增角色（全缺圖）」**：手動輸入角色名稱，新增一個全缺圖角色（所有玩家皆使用缺圖預設圖片）。自訂角色標籤右側有 **✕ 刪除** 按鈕
+- **排序勾選框**：勾選後批量生成時會根據 PRRTS Wiki 的角色順序排序輸出
 - 「⬇ 批量生成 ZIP」下載所有角色的 PNG（含自訂角色，輸出檔名使用角色名稱）
 
 > ⚠️ 每次批量生成前 `output/` 會被清空，請先下載上次的 ZIP。
+
+---
+
+## UI 功能
+
+### Topbar
+- 右上角顯示版本號（v0.2.0）
+
+### 上傳區塊
+- 顯示已上傳檔案的實際檔名（過長時自動截斷顯示 `...`）
+- 自訂樣式的「📁 上傳」按鈕（隱藏瀏覽器預設檔案輸入框文字）
+- 上傳/清除後即時更新檔名與狀態顯示
+
+### 標題開關
+- Step 3 的標題啟用/停用開關
+- 停用時自動隱藏標題相關設定欄位與預覽區的標題拖拉框
+- 切換時自動觸發預覽更新
+
+### namemap 說明
+- Step 1 的 namemap 說明改為 `?` 圖示，hover 時顯示提示文字
 
 ---
 
@@ -104,7 +165,8 @@ roster-reciter/
 ├── app.py                    # Flask 主程式，所有 API 路由
 ├── requirements.txt          # Flask + Pillow
 ├── tools/
-│   └── build_namemap.py      # 從 operator_data JSON 產生 namemap.json
+│   ├── build_namemap.py      # 從 operator_data JSON 產生 namemap.json
+│   └── sort_output.py        # 根據 PRRTS Wiki 排序輸出圖片
 ├── config/
 │   ├── default_layout.json   # 出廠預設版面（重設時讀取）
 │   ├── layout.json           # 使用者目前版面（自動儲存，gitignore）

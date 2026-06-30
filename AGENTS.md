@@ -86,7 +86,7 @@ roster-reciter/
 | POST | `/api/upload/avatar/<n>` | 上傳玩家 n 的頭像（回傳 `img_w`/`img_h` 供前端更新框比例） |
 | POST | `/api/upload/namemap` | 上傳角色名稱對照表（JSON），接受 `mode` / `lang` form fields |
 | POST | `/api/upload/namemap/clear` | 清除 namemap，重置 mode/lang 為預設值 |
-| GET | `/api/uploads/status` | 查詢各上傳資源是否存在 |
+| GET | `/api/uploads/status` | 查詢各上傳資源是否存在（回傳 `background_name`、`default_image_name`） |
 | GET | `/api/fonts` | 列出系統字型（TTF/TTC/OTF） |
 | GET | `/api/browse/folder` | 開啟原生資料夾選擇對話框 |
 | GET/POST | `/api/session` | 已廢棄（stub，回傳空值） |
@@ -148,6 +148,9 @@ roster-reciter/
 - `immediateSaveLayout()` → 預覽前呼叫，確保後端用最新設定
 - `syncEnvToLayout()` → 將 baseDir / playerFolders / remember 注入 `state.layout` 再儲存
 - `syncLayoutToForm()` / `collectLayoutFromForm()` → 包含 `label_style`、`date_style`、`date_width`、`date_height` 的雙向同步
+- `loadUploadsStatus()` → 查詢 `/api/uploads/status`，分別設定 `*-file`（檔名）和 `*-status`（狀態）span
+- **上傳處理**：所有上傳 change handler 在呼叫 API 前更新對應的 `*-file` span 顯示檔名；清除 handler 清除後重置為 `"未選擇檔案"`
+- **標題開關**：`titleEnabled` change handler 設定 `state.layout.title_enabled`，切換表單欄位顯示/停用，呼叫 `layoutEditor.renderDragBoxes()` 和 `previewMgr.requestBlankPreview()`
 - **自訂角色**：`btnAddChar` 點擊後 `prompt` 輸入名稱，建立 `{file_stem: "__custom__N", display_name, _custom: true}` 物件。`_custom=true` 的標籤會顯示 ✕ 刪除按鈕。預覽/下載/批量生成時，`file_stem` 映射為 `"__blank__"`（不匹配任何實際圖片，使用缺圖預設）
 
 ### `static/js/preview.js`
@@ -156,7 +159,7 @@ roster-reciter/
 
 ### `static/js/layout-editor.js`
 - `renderSlotInputs()` → 渲染每個玩家的 accordion 設定區塊，自動還原展開狀態
-- `renderDragBoxes()` → 在預覽圖上疊加可拖拉的方塊（標題框/圖片框/頭像框/名字框/入職日框）
+- `renderDragBoxes()` → 在預覽圖上疊加可拖拉的方塊（標題框/圖片框/頭像框/名字框/入職日框）。**標題框只在 `layout.title_enabled !== false` 時渲染**
 - `_refreshAvatarThumbs()` → 查詢 `/api/uploads/status`，只對 `avatar.enabled=true` 的 slot 填入縮圖 src
 - `collectSlotInputs()` → 將表單值收集回 `state.layout.image_slots`（不含字型欄位，字型由全局 label_style 管理）
 - `_applySyncSlot()` → 同步角色框大小/位置（受 size/alignX/alignY checkbox 控制）
@@ -171,9 +174,9 @@ roster-reciter/
 
 | Step | 面板 | 主要內容 |
 |------|------|---------|
-| 1 | 資料夾 | base_dir、玩家數量、玩家資料夾、**namemap 設定（模式/語言/上傳/清除）**、**角色框比例（僅 HR Dossier 顯示）**、掃描按鈕 |
-| 2 | 資源 | 背景圖、全局缺圖、個別玩家缺圖 |
-| 3 | 版面 | 畫布尺寸、背景色、標題文字樣式（含字型掃描）、重設版面 |
+| 1 | 資料夾 | base_dir、玩家數量、玩家資料夾、**namemap 設定（模式/語言/上傳/清除，含 ? 圖示 hover 說明）**、**角色框比例（僅 HR Dossier 顯示）**、掃描按鈕 |
+| 2 | 資源 | 背景圖、全局缺圖、個別玩家缺圖（**上傳區塊顯示 `[檔案名] [狀態] [清除] [上傳]`**，檔案名過長自動截斷） |
+| 3 | 版面 | 畫布尺寸、背景色、**標題啟用開關**、標題文字樣式（含字型掃描）、重設版面 |
 | 4 | 圖片框 | **名字文字樣式（全局可收合，含字型掃描）**、**入職日樣式（全局可收合，含 W/H）**、等比例鎖定、同步角色框、同步頭像/名字/入職日框、各玩家 accordion（含頭像/名字/入職日 toggle） |
 | 5 | 生成 | 角色標籤列表（含單一 ⬇ 下載）、**+ 新增角色（全缺圖）**、批量生成 ZIP |
 
@@ -208,3 +211,8 @@ roster-reciter/
 14. **全局設定區收合**：Step 4 的名字/入職日全局設定使用 `<details>/<summary>` 原生收合，預設收合。
 15. **自訂角色**：`_custom=true` 的角色在預覽/下載/批量生成時，`file_stem` 一律映射為 `"__blank__"`（不匹配任何實際圖片，使用缺圖預設）。批量生成輸出檔名使用 `display_name`（非 `file_stem`）
 16. **角色框比例**：切換比例呼叫 `/api/layout/reslot`，只修改 slot W/H 與 label.width，X/Y 位置完全不變。一般模式不顯示比例選擇器，HR Dossier 模式下預設為編隊模式（180×375）
+17. **標題啟用/停用**：`title_enabled` 欄位控制標題顯示。停用時，Step 3 的標題設定表單隱藏且欄位停用，`renderDragBoxes()` 不渲染標題框。切換時自動觸發 `requestBlankPreview()` 更新預覽
+18. **上傳區塊 UI 模式**：使用 `[upload-file span] [upload-state span] [清除 button] [上傳 label] [hidden input]` 結構。`.hidden-file-input` 隱藏瀏覽器預設 input，`.upload-file` 限制 max-width 160px 並使用 `text-overflow: ellipsis` 截斷長檔名
+19. **上傳狀態更新**：上傳 change handler 在呼叫 API 前更新 `*-file` span 的 `textContent` 為 `file.name`；清除 handler 清除後重置為 `"未選擇檔案"`。`loadUploadsStatus()` 分別設定檔名和狀態 span
+20. **namemap 預設路徑**：`default_layout.json` 的 `namemap_path` 預設為 `"static/uploads/namemap.json"`，`/api/layout/default` 重設時保留
+21. **版本號**：Topbar 右上角顯示 `.version-badge`（v0.2.0），使用 `margin-left: auto` 右對齊

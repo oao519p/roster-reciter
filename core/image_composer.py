@@ -106,7 +106,8 @@ def compose_slide(
             _draw_avatar(canvas, slot.avatar, av_path)
 
     # 標題
-    _draw_title(draw, layout.title, title_text)
+    if getattr(layout, 'title_enabled', True):
+        _draw_title(draw, layout.title, title_text)
 
     canvas = canvas.convert("RGB")
     buf = io.BytesIO()

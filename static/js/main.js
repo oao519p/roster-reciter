@@ -85,6 +85,14 @@ const dom = {
   btnClearBg:        $("btn-clear-bg"),
   btnSaveNow:        $("btn-save-now"),
   sessionToggle:     $("session-save-toggle"),
+
+  // 標題開關
+  titleEnabled:      $("title-enabled"),
+  titleStyleFields:  $("title-style-fields"),
+  titlePositionFields: $("title-position-fields"),
+
+  // 排序功能
+  sortImages:        $("sort-images"),
 };
 
 // ── 子模組 ────────────────────────────────────
@@ -154,6 +162,14 @@ function syncLayoutToForm() {
     state.playerCount = slotCount;
     dom.playerCount.value = slotCount;
   }
+
+  // 還原標題開關狀態
+  if (dom.titleEnabled) {
+    const titleEnabled = l.title_enabled !== undefined ? l.title_enabled : true;
+    dom.titleEnabled.checked = titleEnabled;
+    // 觸發 change 事件以更新欄位啟用狀態
+    dom.titleEnabled.dispatchEvent(new Event("change"));
+  }
 }
 
 function collectLayoutFromForm() {
@@ -182,6 +198,11 @@ function collectLayoutFromForm() {
   l.date_style.align      = "left";
   l.date_width  = parseInt(dom.dateWidth.value)  || 260;
   l.date_height = parseInt(dom.dateHeight.value) || 36;
+
+  // 標題開關
+  if (dom.titleEnabled) {
+    l.title_enabled = dom.titleEnabled.checked;
+  }
 }
 
 function onLayoutChanged() {
@@ -330,8 +351,9 @@ function bindEvents() {
   dom.btnClearBg.addEventListener("click", async () => {
     await fetch("/api/upload/background/clear", { method: "POST" });
     dom.uploadBg.value = "";
+    const bgFileEl = $("bg-file");
+    if (bgFileEl) bgFileEl.textContent = "未選擇檔案";
     setStatus(dom.bgStatus, "已清除", "ok");
-    // 清除後重新預覽（顯示純色背景）
     collectPlayerFolders();
     previewMgr.requestBlankPreview();
   });
@@ -342,9 +364,30 @@ function bindEvents() {
     await immediateSaveLayout(); // 立即儲存到後端
   });
 
+  // 標題開關：unchecked 時隱藏 title-style-fields 和 title-position-fields
+  dom.titleEnabled.addEventListener("change", () => {
+    const enabled = dom.titleEnabled.checked;
+    state.layout.title_enabled = enabled;
+    const toggleFields = (container, show) => {
+      if (!container) return;
+      container.style.display = show ? "" : "none";
+      container.querySelectorAll("input, select, button").forEach(el => {
+        el.disabled = !show;
+      });
+    };
+    toggleFields(dom.titleStyleFields, enabled);
+    toggleFields(dom.titlePositionFields, enabled);
+    layoutEditor.renderDragBoxes();
+    // 自動觸發預覽更新
+    previewMgr.requestBlankPreview();
+  });
+
   dom.uploadBg.addEventListener("change", async () => {
+    const file = dom.uploadBg.files[0];
+    if (!file) return;
+    const bgFileEl = $("bg-file");
+    if (bgFileEl) bgFileEl.textContent = file.name;
     await uploadFile(dom.uploadBg, "/api/upload/background", dom.bgStatus);
-    // 上傳後自動預覽：有角色就預覽角色，否則預覽空版面
     collectPlayerFolders();
     if (state.characters.length > 0 && state.selectedCharIndex >= 0) {
       previewMgr.requestPreview();
@@ -352,14 +395,20 @@ function bindEvents() {
       previewMgr.requestBlankPreview();
     }
   });
-  dom.uploadDefault.addEventListener("change", () =>
-    uploadFile(dom.uploadDefault, "/api/upload/default_image", dom.defaultStatus)
-  );
+  dom.uploadDefault.addEventListener("change", async () => {
+    const file = dom.uploadDefault.files[0];
+    if (!file) return;
+    const defFileEl = $("default-file");
+    if (defFileEl) defFileEl.textContent = file.name;
+    await uploadFile(dom.uploadDefault, "/api/upload/default_image", dom.defaultStatus);
+  });
 
   // 清除全局缺圖預設
   dom.btnClearDefault.addEventListener("click", async () => {
     await fetch("/api/upload/default_image/clear", { method: "POST" });
     dom.uploadDefault.value = "";
+    const defFileEl = $("default-file");
+    if (defFileEl) defFileEl.textContent = "未選擇檔案";
     setStatus(dom.defaultStatus, "已清除", "ok");
     if (state.characters.length > 0 && state.selectedCharIndex >= 0) {
       previewMgr.requestPreview();
@@ -405,6 +454,8 @@ function bindEvents() {
   dom.uploadNamemap.addEventListener("change", async () => {
     const file = dom.uploadNamemap.files[0];
     if (!file) return;
+    const nmFileEl = $("namemap-file");
+    if (nmFileEl) nmFileEl.textContent = file.name;
     const mode = document.querySelector("input[name='namemap-mode']:checked")?.value || "normal";
     const lang = document.querySelector("input[name='namemap-lang']:checked")?.value || "tw";
     const formData = new FormData();
@@ -438,6 +489,8 @@ function bindEvents() {
   dom.btnClearNamemap.addEventListener("click", async () => {
     await fetch("/api/upload/namemap/clear", { method: "POST" });
     dom.uploadNamemap.value = "";
+    const nmFileEl = $("namemap-file");
+    if (nmFileEl) nmFileEl.textContent = "未選擇檔案";
     setStatus(dom.namemapStatus, "已清除", "ok");
     if (state.layout) {
       state.layout.namemap_path = "";
@@ -853,6 +906,7 @@ async function generateAll() {
           file_stem: c._custom ? "__blank__" : c.file_stem,
           display_name: c.display_name,
         })),
+        sort_images: dom.sortImages ? dom.sortImages.checked : false,
       }),
     });
 
@@ -965,19 +1019,33 @@ async function loadUploadsStatus() {
 
     const ts = Date.now();   // 防快取
 
-    // 背景圖：只顯示文字狀態（縮圖在右側預覽區顯示）
+    // 背景圖：顯示檔名 + 狀態
+    const bgFileEl = $("bg-file");
     if (data.background) {
-      setStatus(dom.bgStatus, "✓ 已上傳", "ok");
+      const bgName = data.background_name || "background.png";
+      if (bgFileEl) bgFileEl.textContent = bgName;
+      setStatus(dom.bgStatus, "已上傳", "ok");
+    } else {
+      if (bgFileEl) bgFileEl.textContent = "未選擇檔案";
+      setStatus(dom.bgStatus, "", "");
     }
 
-    // 全局缺圖：只顯示文字狀態
+    // 全局缺圖：顯示檔名 + 狀態
+    const defFileEl = $("default-file");
     if (data.default_image) {
-      setStatus(dom.defaultStatus, "✓ 已上傳", "ok");
+      const defName = data.default_image_name || "default_image.png";
+      if (defFileEl) defFileEl.textContent = defName;
+      setStatus(dom.defaultStatus, "已上傳", "ok");
+    } else {
+      if (defFileEl) defFileEl.textContent = "未選擇檔案";
+      setStatus(dom.defaultStatus, "", "");
     }
 
-    // 名稱對照表：顯示筆數，並還原 mode/lang radio
+    // 名稱對照表：顯示檔名 + 狀態
+    const nmFileEl = $("namemap-file");
     if (data.namemap_count > 0) {
-      setStatus(dom.namemapStatus, `✓ 已載入 ${data.namemap_count} 筆`, "ok");
+      if (nmFileEl) nmFileEl.textContent = "namemap.json";
+      setStatus(dom.namemapStatus, `已上傳 (${data.namemap_count} 筆)`, "ok");
       const mode = state.layout?.namemap_mode || "normal";
       const lang = state.layout?.namemap_lang || "tw";
       const slotMode = state.layout?.slot_mode || "formation";

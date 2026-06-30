@@ -8,7 +8,6 @@ config/layout.json
 config/session.json
 operator_data_*.json
 config/namemap_incomplete.json
-tools/
 __pycache__/
 *.pyc
 *.pyo

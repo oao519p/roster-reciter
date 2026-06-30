@@ -101,6 +101,7 @@ class Layout:
     date_style: TextStyle = field(default_factory=lambda: TextStyle(font_size=24, color="#1a1a2e", align="left"))
     date_width: int = 260   # 入職日框全局寬度
     date_height: int = 36   # 入職日框全局高度
+    title_enabled: bool = True  # 是否啟用標題
 
     def to_dict(self) -> dict:
         d = asdict(self)
@@ -156,6 +157,7 @@ class Layout:
             date_style=TextStyle(**data["date_style"]) if data.get("date_style") else TextStyle(font_size=24, color="#1a1a2e", align="left"),
             date_width=data.get("date_width", 260),
             date_height=data.get("date_height", 36),
+            title_enabled=data.get("title_enabled", True),
         )
 
     def save(self, path) -> None:
@@ -251,4 +253,5 @@ class Layout:
             date_style=TextStyle(font_size=24, color="#1a1a2e", align="left"),
             date_width=260,
             date_height=36,
+            title_enabled=True,
         )

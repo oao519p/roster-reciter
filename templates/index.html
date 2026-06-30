@@ -12,6 +12,7 @@
     <header class="topbar">
       <h1>🎴 RosterReciter</h1>
       <span class="subtitle">報菜名投影片生成器</span>
+      <span class="version-badge">v0.2.0</span>
     </header>
 
     <div class="main-layout">
@@ -60,7 +61,7 @@
 
           <div id="player-folder-list"></div>
 
-          <label>角色名稱對照表</label>
+          <label style="font-size:14px;font-weight:bold">角色名稱對照表 <span class="hint-icon" title="上傳自定義 JSON，用於角色名稱比對">?</span></label>
           <div style="margin-bottom:6px">
             <label class="hint" style="display:block;margin-bottom:4px">比對模式</label>
             <label style="margin-right:12px;font-size:13px">
@@ -73,7 +74,7 @@
             </label>
           </div>
           <div id="namemap-lang-row" style="display:none;margin-bottom:6px">
-            <label class="hint" style="display:block;margin-bottom:4px">顯示語言</label>
+            <label class="hint" style="display:block;margin-bottom:4px">角色名稱顯示語言</label>
             <label style="margin-right:10px;font-size:13px"><input type="radio" name="namemap-lang" value="tw" checked style="width:auto;margin-right:4px" />繁中</label>
             <label style="margin-right:10px;font-size:13px"><input type="radio" name="namemap-lang" value="cn" style="width:auto;margin-right:4px" />簡中</label>
             <label style="margin-right:10px;font-size:13px"><input type="radio" name="namemap-lang" value="en" style="width:auto;margin-right:4px" />英文</label>
@@ -91,9 +92,11 @@
             </label>
           </div>
           <div class="upload-row">
-            <input type="file" id="upload-namemap" accept=".json" />
+            <span id="namemap-file" class="status-inline upload-file">未選擇檔案</span>
+            <span id="namemap-status" class="status-inline upload-state"></span>
             <button class="btn-secondary" id="btn-clear-namemap" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>
-            <span id="namemap-status" class="status-inline"></span>
+            <label class="btn-secondary upload-btn" for="upload-namemap" style="padding:3px 8px;font-size:11px;flex-shrink:0;cursor:pointer">📁 上傳</label>
+            <input type="file" id="upload-namemap" accept=".json" class="hidden-file-input" />
           </div>
 
           <button class="btn-primary" id="btn-scan">🔍 掃描角色</button>
@@ -104,21 +107,29 @@
         <section class="panel" id="panel-2">
           <h2><span class="step-badge">2</span> 資源設定</h2>
 
-          <label>背景圖片 <span class="hint">（上傳後自動預覽）</span></label>
+          <label style="font-size:14px;font-weight:bold">背景圖片 <span class="hint">（上傳後自動預覽）</span></label>
           <div class="upload-row">
-            <input type="file" id="upload-bg" accept="image/*" />
+            <span id="bg-file" class="status-inline upload-file">未選擇檔案</span>
+            <span id="bg-status" class="status-inline upload-state"></span>
             <button class="btn-secondary" id="btn-clear-bg" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>
-            <span id="bg-status" class="status-inline"></span>
+            <label class="btn-secondary upload-btn" for="upload-bg" style="padding:3px 8px;font-size:11px;flex-shrink:0;cursor:pointer">📁 上傳</label>
+            <input type="file" id="upload-bg" accept="image/*" class="hidden-file-input" />
           </div>
 
-          <label>缺圖預設圖片（全局）</label>
+          <div style="height:12px"></div>
+
+          <label style="font-size:14px;font-weight:bold">缺圖預設圖片（全局）</label>
           <div class="upload-row">
-            <input type="file" id="upload-default" accept="image/*" />
+            <span id="default-file" class="status-inline upload-file">未選擇檔案</span>
+            <span id="default-status" class="status-inline upload-state"></span>
             <button class="btn-secondary" id="btn-clear-default" style="padding:3px 8px;font-size:11px;flex-shrink:0">✕ 清除</button>
-            <span id="default-status" class="status-inline"></span>
+            <label class="btn-secondary upload-btn" for="upload-default" style="padding:3px 8px;font-size:11px;flex-shrink:0;cursor:pointer">📁 上傳</label>
+            <input type="file" id="upload-default" accept="image/*" class="hidden-file-input" />
           </div>
 
-          <label>缺圖預設圖片（個別玩家，優先於全局）</label>
+          <div style="height:12px"></div>
+
+          <label style="font-size:14px;font-weight:bold">缺圖預設圖片（個別玩家，優先於全局）</label>
           <div id="player-default-list" class="hint">請先套用玩家數量後顯示</div>
           <div id="player-default-clears"></div>
 
@@ -144,8 +155,14 @@
           </div>
 
           <div class="layout-sub">
+            <div class="row-inline" style="margin-bottom:6px">
+              <label style="margin:0;font-size:13px">
+                <input type="checkbox" id="title-enabled" checked style="width:auto;margin-right:4px" />
+                啟用標題
+              </label>
+            </div>
             <label>標題文字</label>
-            <div class="form-grid">
+            <div class="form-grid" id="title-style-fields">
               <span>字型</span>
               <div style="display:flex;gap:4px;align-items:center">
                 <select id="title-font-select" style="flex:1">
@@ -168,7 +185,7 @@
             </div>
           </div>
 
-          <div class="layout-sub">
+          <div class="layout-sub" id="title-position-fields">
             <label>標題框位置 <span class="hint">（px）</span></label>
             <div class="form-grid">
               <span>X</span><input type="number" id="title-x" value="50" />
@@ -263,6 +280,12 @@
           <div id="character-list"></div>
           <div class="row-inline" style="margin-top:8px">
             <button class="btn-secondary" id="btn-add-char" style="flex:1;font-size:12px">+ 新增角色（全缺圖）</button>
+          </div>
+          <div class="row-inline" style="margin-top:4px">
+            <label style="margin:0;font-size:13px">
+              <input type="checkbox" id="sort-images" style="width:auto;margin-right:4px" />
+              自動排序圖片（根據 PRRTS Wiki 實裝順序）
+            </label>
           </div>
           <div class="row-inline" style="margin-top:4px">
             <button class="btn-primary" id="btn-generate">⬇ 批量生成 ZIP</button>

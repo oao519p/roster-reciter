@@ -478,18 +478,20 @@ export class LayoutEditor {
     this._updateScale();
     const s = this._scale;
 
-    // 標題框
-    this._createDragBox({
-      label: "標題",
-      x: layout.title.x * s, y: layout.title.y * s,
-      w: layout.title.width * s, h: layout.title.height * s,
-      className: "drag-box title-box",
-      onMove: (dx, dy) => {
-        layout.title.x = Math.round(layout.title.x + dx / s);
-        layout.title.y = Math.round(layout.title.y + dy / s);
-        this.onChanged(); this.renderDragBoxes(); this._triggerAutoSave();
-      },
-    });
+    // 標題框（只在啟用時顯示）
+    if (layout.title_enabled !== false) {
+      this._createDragBox({
+        label: "標題",
+        x: layout.title.x * s, y: layout.title.y * s,
+        w: layout.title.width * s, h: layout.title.height * s,
+        className: "drag-box title-box",
+        onMove: (dx, dy) => {
+          layout.title.x = Math.round(layout.title.x + dx / s);
+          layout.title.y = Math.round(layout.title.y + dy / s);
+          this.onChanged(); this.renderDragBoxes(); this._triggerAutoSave();
+        },
+      });
+    }
 
     // 圖片框 + 頭像框 + 名字框
     layout.image_slots.forEach((slot) => {
